@@ -1,0 +1,11 @@
+body, html {
+	margin: 0;
+}
+#mainCanvas {
+	-webkit-transition: background 0.4s;
+	transition: background 0.4s;
+}
+#imgPreload {
+	display: none;
+}
+
