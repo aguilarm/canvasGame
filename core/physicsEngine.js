@@ -15,13 +15,14 @@ RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef;
 PhysicsEngineClass = Class.extend({
 	world: null,
 	
-	PHYSICS_LOOP_HZ: 1.0/60.0,
+	physicsLoopHZ: 1.0/60.0,
 	
 	//----------------------------------------------
 	create: function() {
+		console.log('Creating world');
 		//Vec2(x,y) specifies gravity vector (topdown has none)
 		//And a boolean allows or disallows sleep
-		this.world = new World(
+		gPhysicsEngine.world = new World(
 			new Vec2(0,0),
 			false
 		);
@@ -30,14 +31,13 @@ PhysicsEngineClass = Class.extend({
 	//-----------------------------------------------
 	update: function() {
 		var start = Date.now();
-		
-		this.world.Step(
-			PHYSICS_LOOP_HZ, //Framerate at which to update phyics
+		var physicsLoopHZ = 1.0/60.0;
+		gPhysicsEngine.world.Step(
+			physicsLoopHZ, //Framerate at which to update phyics
 			10,		//velocity iterations
 			10		//position iterations
 		);
 		this.world.ClearForces();
-		
 		return(Date.now() - start);
 	},
 	//------------------------------------------------

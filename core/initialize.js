@@ -27,7 +27,7 @@ $(function(){
 	
 	//Create the canvas element
 	initCanvas();
-	
+
 	//saveMaster is fired when the xhr loads, to prevent calling a draw without a loaded image
 	//Prooobably a better way to do this, but for now:
 	$(document).on('saveMaster', function () {
@@ -41,6 +41,13 @@ $(function(){
 		//},200);
 	});
 	
+	//Start up game engine
+	gGameEngine.setup();
+	console.log('setupGameEngine');
+	setInterval(function(){
+		gGameEngine.update();
+		console.log('updating gGameEngine...');
+	}, 300);
 });
 
 //Create a canvas with the id of canvasID and context of contextName

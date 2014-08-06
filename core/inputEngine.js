@@ -10,6 +10,7 @@ InputEngineClass = Class.extend({
 	},
 	
 	setup: function () {
+		console.log('gInputEngine.setup');
 		// Example usage of bind, where we're setting up
 		// the W, A, S, and D keys in that order.
 		gInputEngine.bind(87, 'move-up');
@@ -18,9 +19,9 @@ InputEngineClass = Class.extend({
 		gInputEngine.bind(68, 'move-right');
 
 		// Adding the event listeners for the appropriate DOM events.
-		document.getElementById('my_canvas').addEventListener('mousemove', gInputEngine.onMouseMove);
-		document.getElementById('my_canvas').addEventListener('keydown', gInputEngine.onKeyDown);
-		document.getElementById('my_canvas').addEventListener('keyup', gInputEngine.onKeyUp);
+		document.getElementById('mainCanvas').addEventListener('mousemove', gInputEngine.onMouseMove);
+		document.getElementById('mainCanvas').addEventListener('keydown', gInputEngine.onKeyDown);
+		document.getElementById('mainCanvas').addEventListener('keyup', gInputEngine.onKeyUp);
 	},	
 
 	//-----------------------

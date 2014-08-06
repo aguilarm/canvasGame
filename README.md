@@ -9,10 +9,9 @@ When I'm finished with this project, I hope to understand how to write the entir
 
 Also, GRITS is a robot fighting game that has a controllable robot which can pickup various objects like powerups and health from the gameworld and shoots other AI or player controlled robots.  My ultimate goal is to use this framework to build something more like BrowserQuest, a more Zelda-like RPG game, and the Udacity course was the best resource I've found since afaik BrowserQuest does not have an entire course built to understand how to put it together.
 
-Short term, I next need to add a way to handle input, and a main game engine that will use the inputs to make things happen.  After or sometime during that I'll add animations, and once I have a character walking around the canvas I'll tackle adding a tiled map loader.  Then I'll need entities to interact with and once all of that is finished to a reasonable extent I think I'll be able to make a way to log in and save things to a database.
+First, I'm going to try to get the engine working on it's own and then add server interaction so I can have different players login.
 
 ## Progress
 
-Right now I have the assetLoader working which will load items correctly depending on type, spriteSheet.js which handles the processing of any atlases I need to use, and xhr which abstracts xmlhttprequests and parses json data for spriteSheet to use.
+The GameEngine class loads up the physics engine and input engine, and physics engine creates a box2d world.  An entity class is written with a player and weapon class on top but not utilized yet, and inputEngine does not appear to work right yet.
 
-With all of those working, I can write images to the canvas from an atlas json/img pair.  Next I'm going to implement the input and then I'll probably need animations and a game engine to call the input engine with.  After I can move a character around the screen with my mouse and keyboard, I'll tackle the creation of a tiled map loader.

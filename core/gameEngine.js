@@ -17,7 +17,7 @@ GameEngineClass = Class.extend({
 	
 	//---------------------------------
 	setup: function() {
-		
+		console.log('running gameEngine setup');
 		//Create physics Engine
 		gPhysicsEngine.create();
 		
@@ -42,10 +42,11 @@ GameEngineClass = Class.extend({
 	},
 	
 	update: function() {
-		
+		console.log('gGameEngineUpdate');
 		if (gInputEngine.actions['move-up']){
 			//Adjust move_dir by 1 in the y direction
 			gGameEngine.mov_dir.y -= 1;
+			console.log('MOVIN ON UP');
 		}
 		if (gInputEngine.actions['move-down']){
 			//Adjust move_dir by 1 in the y direction
@@ -70,7 +71,7 @@ GameEngineClass = Class.extend({
 			gGameEngine.move_dir.Multiply(gGameEinge.gPlayer0.walkSpeed);
 		}
 		
-		gGameEngine.gPlayer0.mpPhysBody.setLinearVelocity(gGameEngine.move_dir.x, gGameEngine.move_dir.y);
+		//this.gPlayer0.mpPhysBody.setLinearVelocity(this.move_dir.x, this.move_dir.y);
 		
 		//Mouse based firing
 		if (gInputEngine.actions.fire0 || gInputEngine.actions.fire1) {
@@ -85,8 +86,9 @@ GameEngineClass = Class.extend({
 			dirVec.normalize();
 		}
 		
-		//
-	}
+		//Update the physics engine
+		gPhysicsEngine.update();
+	}//end of update
 });
 
 var gGameEngine = new GameEngineClass();
