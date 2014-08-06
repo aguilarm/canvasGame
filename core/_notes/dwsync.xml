@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<dwsync>
+<file name="core.js" server="ftp.koding.com//home/aguilarm/Web/canvasGame/" local="130514897892462327" remote="130517774400000000" Dst="2" />
+<file name="assetLoader.js" server="ftp.koding.com//home/aguilarm/Web/canvasGame/" local="130515790692044863" remote="130517774400000000" Dst="2" />
+<file name="entity.js" server="ftp.koding.com//home/aguilarm/Web/canvasGame/" local="130517604332255835" remote="130517784000000000" Dst="2" />
+<file name="gameEngine.js" server="ftp.koding.com//home/aguilarm/Web/canvasGame/" local="130517616566315584" remote="130517796600000000" Dst="2" />
+<file name="initialize.js" server="ftp.koding.com//home/aguilarm/Web/canvasGame/" local="130515924351029719" remote="130517774400000000" Dst="2" />
+<file name="inputEngine.js" server="ftp.koding.com//home/aguilarm/Web/canvasGame/" local="130517330331143868" remote="130517774400000000" Dst="2" />
+<file name="physicsEngine.js" server="ftp.koding.com//home/aguilarm/Web/canvasGame/" local="130517604868796524" remote="130517786400000000" Dst="2" />
+<file name="player.js" server="ftp.koding.com//home/aguilarm/Web/canvasGame/" local="130517341964019231" remote="130517775000000000" Dst="2" />
+<file name="spriteSheet.js" server="ftp.koding.com//home/aguilarm/Web/canvasGame/" local="130515653781164008" remote="130517775000000000" Dst="2" />
+<file name="xhr.js" server="ftp.koding.com//home/aguilarm/Web/canvasGame/" local="130515642191781134" remote="130517775000000000" Dst="2" />
+<file name="box2D.js" server="ftp.koding.com//home/aguilarm/Web/canvasGame/" local="130517562459500851" remote="130517775000000000" Dst="2" />
+<file name="weaponInstance.js" server="ftp.koding.com//home/aguilarm/Web/canvasGame/" local="130517603957354392" remote="130517784000000000" Dst="2" />
+</dwsync>
