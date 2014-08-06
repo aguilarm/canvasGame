@@ -1,3 +1,20 @@
+/*Copyright 2011 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+#limitations under the License.*/
+//----------------------------------
+//Modified by Mika Aguilar
+//----------------------------------
+
 InputEngineClass = Class.extend({
 	// Dictionary mapping ASCII key codes to string values describing intended actions
 	bindings:{},
@@ -5,6 +22,11 @@ InputEngineClass = Class.extend({
 	actions: {},
 	
 	mouse: {
+		x: 0,
+		y: 0
+	},
+	
+	screenMouse: {
 		x: 0,
 		y: 0
 	},
@@ -17,40 +39,49 @@ InputEngineClass = Class.extend({
 		gInputEngine.bind(65, 'move-left');
 		gInputEngine.bind(83, 'move-down');
 		gInputEngine.bind(68, 'move-right');
-
-		// Adding the event listeners for the appropriate DOM events.
-		document.getElementById('mainCanvas').addEventListener('mousemove', gInputEngine.onMouseMove);
-		document.getElementById('mainCanvas').addEventListener('keydown', gInputEngine.onKeyDown);
-		document.getElementById('mainCanvas').addEventListener('keyup', gInputEngine.onKeyUp);
 	},	
 
 	//-----------------------
 	//When mouse moves, update our info on where it is
-	onMouseMove: function (event) {
-		gInputEngine.mouse.x = event.clientX;
-		gInputEngine.mouse.y = event.clientY;
+	onMouseMoveEvent: function (event) {
+		this.mouse.x = event.clientX;
+		this.mouse.y = event.clientY;
 	},
 	//--------------------------
-	onKeyDown: function (event) {
-		//when the key is pressed, make the action active
-		var action = gInputEngine.bindings[event.keyID];
+	onKeyDownEvent: function (keyCode, event) {
+		//grab the keycode from the event listener
+		var code = keyCode;
+		//check the bindings dictionary for an
+		//action associated with the passed code
+		var action = this.bindings[code];
 		if(action) {
-			gInputEngine.actions[action] = true;
+			this.actions[action] = true;
 		}
 	},
 	//----------------
-	onKeyUp: function (event) {
+	onKeyUpEvent: function (keyCode) {
 		//when key is released, deactivate action
-		var action = gInputEngine.bindings[event.keyID];
+		var code = keyCode;
+		
+		var action = this.bindings[code];
 		if(action) {
-			gInputEngine.actions[action] = false;
+			this.actions[action] = false;
 		}
 	},
-	
+	//-----------------
+	//this can be called on update cycle to
+	//let other classes know an action state is
+	//active or true
+	state: function (action) {
+    	return this.actions[action];
+  	},
+	clearState: function (action) {
+		this.actions[action] = false;
+	},
 	//Takes ASCII keycode and a string representing an action
 	//Actions are defined in the gameEngine
 	bind: function (key, action) {
-		gInputEngine.bindings[key] = action;
+		this.bindings[key] = action;
 	}
 });
 

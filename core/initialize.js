@@ -25,8 +25,8 @@ preloadAssets();
 //Run when document is ready
 $(function(){
 	
-	//Create the canvas element
-	initCanvas();
+	//Setup the render engine which sizes the canvas and adds event listeners
+	gRenderEngine.setup();
 
 	//saveMaster is fired when the xhr loads, to prevent calling a draw without a loaded image
 	//Prooobably a better way to do this, but for now:
@@ -35,7 +35,7 @@ $(function(){
 		drawSprite("skele_18.png",100,100);
 		console.log('drawing skele_01');
 		setTimeout(function(){
-			clearCanvas(ctx);
+			clearCanvas(gRenderEngine.context);
 			console.log('clearCanvas call');
 		}, 4000);
 		//},200);
@@ -51,6 +51,7 @@ $(function(){
 });
 
 //Create a canvas with the id of canvasID and context of contextName
+/*This is now handled by the renderEngine
 function initCanvas() {
 	//Set up variables
 	var canvas = document.getElementById('mainCanvas');
@@ -65,7 +66,7 @@ function initCanvas() {
 	}, 300);
 	console.log("attempted to edit canvas, checking ctx next");
 }
-
+*/
 //Clear the entire specific canvas
 function clearCanvas(context){
 	context.clearRect(0, 0, context.canvas.width, context.canvas.height);

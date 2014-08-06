@@ -1,3 +1,20 @@
+/*Copyright 2011 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+#limitations under the License.*/
+//----------------------------------
+//Modified by Mika Aguilar
+//----------------------------------
+
 //Global shorthands for Box2d primitives
 Vec2 = Box2D.Common.Math.b2Vec2;
 BodyDef = Box2D.Dynamics.b2BodyDef;
@@ -15,8 +32,6 @@ RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef;
 PhysicsEngineClass = Class.extend({
 	world: null,
 	
-	physicsLoopHZ: 1.0/60.0,
-	
 	//----------------------------------------------
 	create: function() {
 		console.log('Creating world');
@@ -31,13 +46,13 @@ PhysicsEngineClass = Class.extend({
 	//-----------------------------------------------
 	update: function() {
 		var start = Date.now();
-		var physicsLoopHZ = 1.0/60.0;
+		console.log('physicsEngine update');
 		gPhysicsEngine.world.Step(
-			physicsLoopHZ, //Framerate at which to update phyics
+			Constants.PHYSICS_LOOP_HZ, //Framerate at which to update phyics
 			10,		//velocity iterations
 			10		//position iterations
 		);
-		this.world.ClearForces();
+		this.world.ClearForces();//Stop physics so things do not keep gliding all over
 		return(Date.now() - start);
 	},
 	//------------------------------------------------

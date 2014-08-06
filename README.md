@@ -1,7 +1,7 @@
 canvasGame
 ==========
 
-Creating an html5 game using the canvas element and a ton of javascript, following the <a href="https://www.udacity.com/course/cs255">Udacity HTML5 Game Development course</a> as well as refrencing and the actual GRITS game code.
+Creating an html5 game using the canvas element and a ton of javascript, following the <a href="https://www.udacity.com/course/cs255">Udacity HTML5 Game Development course</a> as well as refrencing and the actual GRITS game code.  The Udacity course is a great resource, but it woefully fails at actually allowing someone to build an entire game engine and use it just following the class.  After the class, you can EDIT the game engine a little bit, and understand how key parts work, but a huge majority of it is still kind of a mystery.  So with this project I'm hoping to fill in the gaps.
 
 ## Goal
 
