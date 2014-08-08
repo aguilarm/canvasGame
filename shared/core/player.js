@@ -45,7 +45,7 @@ PlayerClass = EntityClass.extend({
 	},
 	//---------------------------------------------------
 	update: function(){
-		//I have no idea what this actually does
+		//I have no idea what this actually does, ACTIVATE IT HAHAHHA
 		this.physBody.SetActive(true);
 	},
 	//---------------------------------------------------
