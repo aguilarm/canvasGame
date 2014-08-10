@@ -56,6 +56,7 @@ InputEngineClass = Class.extend({
 		var action = this.bindings[code];
 		if(action) {
 			this.actions[action] = true;
+			console.log(action + "is true");
 		}
 	},
 	//----------------

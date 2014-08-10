@@ -38,8 +38,6 @@ RenderEngineClass = Class.extend({
 	
 	setup: function () {
 		this.canvas = document.getElementById('mainCanvas');
-		console.log('canvas from renderEngine:');
-		console.log(this.canvas);
 		this.context = this.canvas.getContext('2d');
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = window.innerHeight;

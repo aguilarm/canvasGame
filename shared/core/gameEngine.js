@@ -66,13 +66,14 @@ GameEngineClass = Class.extend({
 		var entityClass = Factory.nameClassMap[typename];
 		var es = settings || {};
 		var ent = new (entityClass)(x, y, es);
+		console.log("SPAWING " + typename + "WITH ID " + ent.id);
 		gGameEngine.entities.push(ent);
 		if (ent.name) {
 			gGameEngine.namedEntities[ent.name] = ent;
 		}
-		gGameEngine.onSpawned(ent);
+		//gGameEngine.onSpawned(ent);
 		if (ent.type == "Player") {
-			this.gPlayers[ent.name] = ent;
+			this.gPlayer0 = ent;
 		}
 		return ent;
 	},
@@ -112,6 +113,7 @@ GameEngineClass = Class.extend({
 			var ent = this.entities[i];
 			if (!ent._killed) {
 				ent.update();
+				console.log("updatingEntities");
 			}
 		}
 		

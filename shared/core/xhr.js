@@ -18,7 +18,6 @@ See the License for the specific language governing permissions and
 //Abstracted XMLHTTPRequest
 function xhrGet(reqUri, reqCred, callback) {
 	//set the function that calls the xhrget
-	console.log("xhrGet fired");
 	var caller = xhrGet.caller;
 	//set the request up
 	var xhr = new XMLHttpRequest();
@@ -49,12 +48,8 @@ function xhrGet(reqUri, reqCred, callback) {
 //--------------------------------------------------------
 function saveMaster(data){
 				var obj = JSON.parse(data.response);
-				console.log(obj);
-				console.log("should have just seen some parsed JSON");
 				var sheet = new SpriteSheetClass();
 				gSpriteSheets['master'] = sheet;
-				console.log("Just added to gSpriteSheets from xhr:");
-				console.log(gSpriteSheets);
 				sheet.load("img/master.png");
 				for (var key in obj.frames) {
 					var val = obj.frames[key];
@@ -62,9 +57,6 @@ function saveMaster(data){
 					var cy = val.frame.h * 0.5;
 				
 					sheet.defSprite(key, val.frame.x, val.frame.y, val.frame.w, val.frame.h, cx, cy);
-					console.log("sheet.defSprite in saveMaster");
 				}
 				
-				console.log(sheet);
-				$(document).trigger('saveMaster');
 		}

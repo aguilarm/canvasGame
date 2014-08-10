@@ -7,19 +7,53 @@
 <link rel="shortcut icon" href="img/favicon.ico"  type="image/x-icon" >
 </head>
 <body>
+<script async>
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame    ||
+          function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();
+
+var run = function () {
+          //check for resizes and adjust accordingly.
+          if (gRenderEngine.canvas.width != window.innerWidth) {
+            gRenderEngine.canvas.width = window.innerWidth;
+          }
+          if (gRenderEngine.canvas.height != window.innerHeight) {
+            gRenderEngine.canvas.height = window.innerHeight;
+          }
+
+          
+                  gRenderEngine.context.clearRect ( 0 , 0 , gRenderEngine.canvas.width, gRenderEngine.canvas.height );
+                  gGameEngine.run();
+          requestAnimFrame(run);
+
+
+        };
+setTimeout((function(){requestAnimFrame(run);console.log('requestAnimFrame after 1200')}),1200);
+
+</script>
 <canvas id="mainCanvas"></canvas>
+<div id="logger">
+</div>
 <div id="imgPreload">
 	<img src="img/master.png" />
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="shared/core/box2D.js"></script>
 <script src="shared/core/core.js"></script>
+<script src="shared/core/logger.js"></script>
 <script src="shared/core/constants.js"></script>
-
+<script src="shared/core/factory.js"></script>
+<script src="shared/core/timer.js"></script>
 <script src="shared/core/spriteSheet.js"></script>
 <script src="shared/core/assetLoader.js"></script>
 <script src="shared/core/entity.js"></script>
 <script src="shared/core/player.js"></script>
+<script src="client/scripts/core/clientPlayer.js"></script>
 <script src="shared/core/inputEngine.js"></script>
 <script src="shared/core/renderEngine.js"></script>
 <script src="shared/core/physicsEngine.js"></script>

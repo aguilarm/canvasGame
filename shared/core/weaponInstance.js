@@ -6,4 +6,4 @@ WeaponInstanceClass = EntityClass.extend({
 	}
 });
 
-gGameEngine.factory['WeaponInstance'] = WeaponInstanceClass;
+//gGameEngine.factory['WeaponInstance'] = WeaponInstanceClass;

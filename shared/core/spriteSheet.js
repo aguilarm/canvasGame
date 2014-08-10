@@ -106,22 +106,77 @@ SpriteSheetClass = Class.extend({
 		return null;
 	}
 });
-
+//------------------------------------------------------
+SpriteSheetAnimClass = Class.extend({
+        _spriteSheet:null,
+        _spriteNames:new Array(),
+        _currAnimIdx: 0,  
+        _fps:15,
+        _animIncPerFrame:0.5,
+        _paused:false,
+        //-----------------------------------------
+        loadSheet: function(sheetName, spriteSheetURI)
+        {
+                this._spriteSheet = gSpriteSheets[sheetName];
+                if(this._spriteSheet != null)
+                        return;
+                        
+                var sheet = new SpriteSheetClass();     
+                sheet.load(spriteSheetURI);
+                
+                this._spriteSheet = sheet
+                gSpriteSheets['master'] =sheet;
+                
+                this._spriteNames.length = 0;
+                this._currAnimIdx = 0;
+        },
+        //-----------------------------------------
+        pushFrame: function(spriteName)
+        {
+                this._spriteNames.push(spriteName);
+        },
+        //-----------------------------------------
+        pause: function(onOff)
+        {
+                this._paused = onOff;
+        },
+        //-----------------------------------------
+        getNumFrames: function()
+        {
+                return this._spriteNames.length;
+        },
+        //-----------------------------------------
+        draw: function(posX, posY, settings)
+        {
+                if(this._spriteSheet == null) return;
+                
+                if(!this._paused)
+                        this._currAnimIdx +=  this._animIncPerFrame;
+                        
+                var cIDX = Math.floor(this._currAnimIdx) % this._spriteNames.length;
+                        
+                var spt = this._spriteSheet.getStats(this._spriteNames[cIDX]);
+                if(spt == null)
+                        return;
+                        
+                __drawSpriteInternal(spt,this._spriteSheet,posX,posY,settings);
+        },
+        //-----------------------------------------
+        getCurrentFrameStats:function()
+        {
+                var cIDX = Math.floor(this._currAnimIdx) % this._spriteNames.length;
+                return this._spriteSheet.getStats(this._spriteNames[cIDX]);
+        }
+});
 //------------------------------------------------------
 function drawSprite(spritename, posX, posY) {
-	console.log('calling master sheet:');
-	console.log(gSpriteSheets);
 	for(sheet in gSpriteSheets){
-			console.log("drawSprite");
 		var sheet = gSpriteSheets['master'];
-		console.log(sheet);
 		var spt = sheet.getStats(spritename);
-		console.log(spt);
 		if(spt == null)
 			continue;
 			
 		__drawSpriteInternal(spt, sheet, posX, posY);
-		console.log("tried drawSpriteInternal");
 		return;
 	}
 };
@@ -142,7 +197,4 @@ function __drawSpriteInternal(spt,sheet,posX,posY){
 				spt.x, spt.y, spt.w, spt.h,
 				posX + hlf.x, posY + hlf.y,
 				spt.w, spt.h);
-				
-	console.log('attempting to write img, here is the ctx:');
-	console.log(ctx);
 }

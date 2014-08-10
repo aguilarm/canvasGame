@@ -19,10 +19,11 @@ PlayerClass = EntityClass.extend({
 	walkSpeed: 52*5,
 	walking: false,
 	physBody: null,
+	faceAngleRadians: 0,
 	isDead: false,
 	zIndex: 1,
 	init: function (inputx, inputy, settings) {
-		settings.hsize = {x:26, y:26};
+		this.hsize = {x:26, y:26};
 		this.parent(inputx, inputy, settings);
 		var entityDef = {
 			id: "player",
@@ -45,7 +46,6 @@ PlayerClass = EntityClass.extend({
 	},
 	//---------------------------------------------------
 	update: function(){
-		//I have no idea what this actually does, ACTIVATE IT HAHAHHA
 		this.physBody.SetActive(true);
 	},
 	//---------------------------------------------------
@@ -67,9 +67,14 @@ PlayerClass = EntityClass.extend({
 		}
 	},
 	//---------------------------------------------------
+	sendUpdates: function() {
+		this.sendPhysicsUpdates(true);
+		//if (this.pInput) this.toOthers.q_input(this.pInput);
+	},
 	on_setPosition: function(msg) {
 		this.centerAt(msg);
 	},
 });
 
+Factory.nameClassMap["Player"] = PlayerClass;
 //gGameEngine.factory['player'] = PlayerClass;

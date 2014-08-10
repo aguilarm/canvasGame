@@ -15,39 +15,22 @@ See the License for the specific language governing permissions and
 //Modified by Mika Aguilar
 //----------------------------------
 
-GameEngineClass = Class.extend({
+ClientGameEngineClass = GameEngineClass.extend({
 	gSocket: null,
-	
+	gPlayer0: Factory.nameClassMap["Player"],
 	init:function() {
 		this.parent();
 	},
 	//---------------------------------
 	setup: function() {
 		this.parent();
-		console.log('running gameEngine setup');
-		//Create physics Engine
-		gPhysicsEngine.create(Constants.PHYSICS_UPDATES_PER_SEC, false);
+		console.log('running clientGameEngine setup');
 		
 		//Call input setup to bind keys and set event listeners
-		gInputEngine.setup();
+		
 
 	},
 	//----------------------------------
-	//Entity handling
-	//list of active entities
-	entities: [],
-	//factory is used to store new classes for each entity
-	factory:{},
-	//Used to set the kill order of entities
-	_deferredKill: [],
-	
-	spawnEntity: function (typename) {
-		
-		var ent = new (factory[typename])();
-		this.entities.push(ent);
-		return ent;
-	},
-	
 	update: function() {
 		this.parent();
 		console.log('gGameEngineUpdate, Client');
@@ -60,6 +43,7 @@ GameEngineClass = Class.extend({
 		};
 		
 		var move_dir = new Vec2(0,0);
+		
 		if (gInputEngine.state['move-up']){
 			//Adjust move_dir by 1 in the y direction
 			mov_dir.y -= 1;
@@ -67,27 +51,27 @@ GameEngineClass = Class.extend({
 		}
 		if (gInputEngine.state['move-down']){
 			//Adjust move_dir by 1 in the y direction
-			gGameEngine.mov_dir.y += 1;
+			mov_dir.y += 1;
 		}
 		if (gInputEngine.state['move-left']) {
 			// adjust the move_dir by 1 in the
 			// x direction.
-			gGameEngine.move_dir.x -= 1;
+			move_dir.x -= 1;
 		}
 		if (gInputEngine.state['move-right']) {
 			// adjust the move_dir by 1 in the
 			// x direction.
-			gGameEngine.move_dir.x += 1;
+			move_dir.x += 1;
 		}
 		//check if a move key has been pressed, if so make walk
-		if (gGameEngine.move_dir.LengthSquared()){
+		if (move_dir.LengthSquared()){
 			pInput.walking = true;
 			//Set move_dir to a unit vector in the same direction
 			//it's currently pointing
-			gGameEngine.move_dir.Normalize();
+			move_dir.Normalize();
 			//Then multiply move_dir by players set walkSpeed, this
 			//allows us to modify walkSpeed outside of this function
-			gGameEngine.move_dir.Multiply(this.gPlayer0.walkSpeed);
+			move_dir.Multiply(this.gPlayer0.walkSpeed);
 			pInput.x += move_dir.x;
 			pInput.y += move_dir.y;
 		} else {
@@ -96,8 +80,8 @@ GameEngineClass = Class.extend({
 			pInput.y = 0;
 		}
 		
-		var dPX = gRenderEngine.getScreenPosition(this.gPlayer0.pos).x;
-		var dPY = gRenderEngine.getScreenPosition(this.gPlayer0.pos).y;
+		//var dPX = this.gPlayer0.pos.x;
+		//var dPY = this.gPlayer0.pos.y;
 		
 		//Facing direction from mouse or keyboard, defaults to last value
 		var faceAngleRadians = this.gPlayer0.faceAngleRadians;
@@ -105,16 +89,15 @@ GameEngineClass = Class.extend({
 		
 		//Record and sent out inputs
 		this.gPlayer0.pInput = pInput;
-		this.gPlayer0.sendUpdates();
+		//this.gPlayer0.sendUpdates();
 		
 	},//end of update
 	//-----------------------------------------
 	run: function() {
-		this.parent();
+		//this.parent();
 		var fractionOfNextPhysicsUpdate = this.timeSincePhysicsUpdate / Constants.PHYSICS_LOOP_HZ;
 			
 			this.update();
-			
 		this.draw(fractionOfNextPhysicsUpdate);
 	},
 	//-----------------------------------------
@@ -123,6 +106,7 @@ GameEngineClass = Class.extend({
 		//Just to get this working with one entity, I'm not adding the zIndex support yet
 		//and I'm just going to draw each entity active no matter
 		this.entities.forEach(function(entity){
+			console.log('draw an Entity');
 			entity.draw(fractionOfNextPhysicsUpdate);
 		});
 		
@@ -146,4 +130,4 @@ GameEngineClass = Class.extend({
 	},
 });
 
-var gGameEngine = new GameEngineClass();
+var gGameEngine = new ClientGameEngineClass();

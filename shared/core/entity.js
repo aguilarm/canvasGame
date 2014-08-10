@@ -59,10 +59,30 @@ EntityClass = Class.extend({
 		this.last.x = this.pos.x;
 		this.last.y = this.pos.y;
 	},
+	//----------------------------
+	sendPhysicsUpdates: function (clientControlledPhysics) {
+    var sender = null;
+    if (clientControlledPhysics) {
+      sender = this.toOthers;
+    } else if (IS_SERVER) {
+      sender = this.toAll;
+    }
+    if (sender && this.physBody) {
+      var loc = this.physBody.GetPosition();
+      var vel = this.physBody.GetLinearVelocity();
+      sender.q_phys({
+        x:loc.x,
+        y:loc.y,
+        vx:vel.x,
+        vy:vel.y
+      });
+    }
+  },
 	//-----------------------------
 	draw: function() {
 		//if there is a current sprite name, draw that sprite with the drawSprite function from spriteSheet
 		if(this.currSpriteName) {
+			console.log('entity.draw call');
 			drawSprite(this.currSpriteName, this.pos.x.round() - this.hsize.x, this.pos.y.round() - this.hsize.y);
 		}
 	},
