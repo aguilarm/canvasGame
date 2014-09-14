@@ -24,7 +24,7 @@ ClientGameEngineClass = GameEngineClass.extend({
 	//---------------------------------
 	setup: function() {
 		this.parent();
-		console.log('running clientGameEngine setup');
+		//console.log('running clientGameEngine setup');
 		
 		//Call input setup to bind keys and set event listeners
 		
@@ -33,7 +33,7 @@ ClientGameEngineClass = GameEngineClass.extend({
 	//----------------------------------
 	update: function() {
 		this.parent();
-		console.log('gGameEngineUpdate, Client');
+		//console.log('gGameEngineUpdate, Client');
 		
 		var pInput = {
 			x: 0,
@@ -106,7 +106,7 @@ ClientGameEngineClass = GameEngineClass.extend({
 		//Just to get this working with one entity, I'm not adding the zIndex support yet
 		//and I'm just going to draw each entity active no matter
 		this.entities.forEach(function(entity){
-			console.log('draw an Entity');
+			//console.log('draw an Entity');
 			entity.draw(fractionOfNextPhysicsUpdate);
 		});
 		

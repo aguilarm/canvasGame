@@ -36,13 +36,19 @@ InputEngineClass = Class.extend({
 	},
 	
 	setup: function () {
-		console.log('gInputEngine.setup');
+		//console.log('gInputEngine.setup');
 		// Example usage of bind, where we're setting up
 		// the W, A, S, and D keys in that order.
+		//TODO actual GRITS game handles this differently
 		gInputEngine.bind(87, 'move-up');
 		gInputEngine.bind(65, 'move-left');
 		gInputEngine.bind(83, 'move-down');
 		gInputEngine.bind(68, 'move-right');
+		//now doing up, left, down, right arrow keys; binding the same action
+		gInputEngine.bind(38, 'move-up');
+		gInputEngine.bind(37, 'move-left');
+		gInputEngine.bind(40, 'move-down');
+		gInputEngine.bind(39, 'move-right');
 	},	
 
 	//-----------------------
@@ -58,6 +64,8 @@ InputEngineClass = Class.extend({
 		//check the bindings dictionary for an
 		//action associated with the passed code
 		var action = this.bindings[code];
+		console.log('pressed' + keyCode);
+		console.table(this.bindings);
 		if(action) {
 			this.actions[action] = true;
 			console.log(action + "is true");
@@ -73,7 +81,7 @@ InputEngineClass = Class.extend({
 	onKeyUpEvent: function (keyCode, event) {
 		//when key is released, deactivate action
 		var code = keyCode;
-		
+		console.log('keyupInputEngine');
 		var action = this.bindings[code];
 		if(action) {
 		    if (event && event.cancelable)

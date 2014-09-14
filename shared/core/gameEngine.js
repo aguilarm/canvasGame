@@ -113,7 +113,6 @@ GameEngineClass = Class.extend({
 			var ent = this.entities[i];
 			if (!ent._killed) {
 				ent.update();
-				console.log("updatingEntities");
 			}
 		}
 		

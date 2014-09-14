@@ -33,7 +33,7 @@ RenderEngineClass = Class.extend({
 	//mouse position normalized and clamped to the canvas bounds
 	//not entirely sure why this is in the google src, but here it is
 	init: function () {
-		console.log("Render engine init called");
+		//console.log("Render engine init called");
 	},
 	
 	setup: function () {
