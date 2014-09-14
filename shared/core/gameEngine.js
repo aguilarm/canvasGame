@@ -44,6 +44,10 @@ GameEngineClass = Class.extend({
 	setup: function() {
 		//create physics
 		gPhysicsEngine.create(Constants.PHYSICS_UPDATES_PER_SEC, false);
+		
+		//spawn player
+		this.spawnEntity("Player", 100, 100, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
+		console.log('spawning player')
 	},
 	//----------------------------------
 	
@@ -73,6 +77,7 @@ GameEngineClass = Class.extend({
 		}
 		//gGameEngine.onSpawned(ent);
 		if (ent.type == "Player") {
+		    console.log('SPAWING PLAYER, ASSIGNING TO GPLAYER0');
 			this.gPlayer0 = ent;
 		}
 		return ent;

@@ -17,7 +17,6 @@ See the License for the specific language governing permissions and
 
 ClientGameEngineClass = GameEngineClass.extend({
 	gSocket: null,
-	gPlayer0: Factory.nameClassMap["Player"],
 	init:function() {
 		this.parent();
 	},
@@ -26,7 +25,8 @@ ClientGameEngineClass = GameEngineClass.extend({
 		this.parent();
 		//console.log('running clientGameEngine setup');
 		
-		//Call input setup to bind keys and set event listeners
+		//spawn the player when game starts
+		//TODO this is probably not the best place to put this or even a great way to do it, but for now...
 		
 
 	},
@@ -51,20 +51,24 @@ ClientGameEngineClass = GameEngineClass.extend({
 		}
 		if (gInputEngine.state['move-down']){
 			//Adjust move_dir by 1 in the y direction
+			console.log('MOVIN ON DOWN');
 			mov_dir.y += 1;
 		}
 		if (gInputEngine.state['move-left']) {
 			// adjust the move_dir by 1 in the
 			// x direction.
+			console.log('MOVIN LEFT');
 			move_dir.x -= 1;
 		}
 		if (gInputEngine.state['move-right']) {
 			// adjust the move_dir by 1 in the
 			// x direction.
+			console.log('MOVIN RIGHT');
 			move_dir.x += 1;
 		}
 		//check if a move key has been pressed, if so make walk
 		if (move_dir.LengthSquared()){
+		    console.log('MOVING FOR REAL');
 			pInput.walking = true;
 			//Set move_dir to a unit vector in the same direction
 			//it's currently pointing
@@ -75,13 +79,14 @@ ClientGameEngineClass = GameEngineClass.extend({
 			pInput.x += move_dir.x;
 			pInput.y += move_dir.y;
 		} else {
+		    console.log('STOP');
 			pInput.walking = false;
 			pInput.x = 0;
 			pInput.y = 0;
 		}
 		
-		//var dPX = this.gPlayer0.pos.x;
-		//var dPY = this.gPlayer0.pos.y;
+		var dPX = this.gPlayer0.pos.x;
+		var dPY = this.gPlayer0.pos.y;
 		
 		//Facing direction from mouse or keyboard, defaults to last value
 		var faceAngleRadians = this.gPlayer0.faceAngleRadians;
@@ -89,7 +94,7 @@ ClientGameEngineClass = GameEngineClass.extend({
 		
 		//Record and sent out inputs
 		this.gPlayer0.pInput = pInput;
-		//this.gPlayer0.sendUpdates();
+	    this.gPlayer0.sendUpdates();
 		
 	},//end of update
 	//-----------------------------------------

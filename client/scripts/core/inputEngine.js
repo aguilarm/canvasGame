@@ -64,11 +64,8 @@ InputEngineClass = Class.extend({
 		//check the bindings dictionary for an
 		//action associated with the passed code
 		var action = this.bindings[code];
-		console.log('pressed' + keyCode);
-		console.table(this.bindings);
 		if(action) {
 			this.actions[action] = true;
-			console.log(action + "is true");
 			if (event && event.cancelable)
 			    event.preventDefault();
 		    if (!this.locks[action]) {
@@ -81,7 +78,6 @@ InputEngineClass = Class.extend({
 	onKeyUpEvent: function (keyCode, event) {
 		//when key is released, deactivate action
 		var code = keyCode;
-		console.log('keyupInputEngine');
 		var action = this.bindings[code];
 		if(action) {
 		    if (event && event.cancelable)

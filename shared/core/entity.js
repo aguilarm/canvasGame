@@ -37,7 +37,7 @@ EntityClass = Class.extend({
 		this.pos.y = y;
 		
 		//merge(this,settings);
-		//Need to investigate this
+		//TODO Need to investigate this
 		//	this.spawnInfo = JSON.stringify(settings);
 		//},
 	},

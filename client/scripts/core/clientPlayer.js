@@ -114,7 +114,8 @@ ClientPlayerClass = PlayerClass.extend({
     drawSprite("skele_20.png",120,120);
         
   },
-  //-----------------------------------------
+ /* //-----------------------------------------
+ //current character does not have legs the same way grits does
         _drawLegMask: function(ctx,settings)
     {
                 var spt = settings.player._legSpriteMaskAnimList[settings.player._currLegAnimIndex].getCurrentFrameStats();
@@ -133,7 +134,7 @@ ClientPlayerClass = PlayerClass.extend({
                   ctx.rotate(-rotRadians);
                   ctx.translate(-dPX, -dPY);
                 }
-        },
+        },*/
   //-----------------------------------------
         _drawPlayerAvatar: function(ctx,settings)
     {
