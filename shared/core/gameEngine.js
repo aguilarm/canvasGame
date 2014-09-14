@@ -32,6 +32,7 @@ GameEngineClass = Class.extend({
 	
 	dataTypes: [],
 	gPlayer0: null,
+	gPlayers: {},
 	fps: 0,
 	currentTick: 0,
 	lastFpsSec: 0,
@@ -46,8 +47,8 @@ GameEngineClass = Class.extend({
 		gPhysicsEngine.create(Constants.PHYSICS_UPDATES_PER_SEC, false);
 		
 		//spawn player
-		this.spawnEntity("Player", 100, 100, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
-		console.log('spawning player')
+		this.spawnEntity("Player", 150, 100, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
+		console.log('spawning player from gameEngine.js');
 	},
 	//----------------------------------
 	
@@ -65,21 +66,32 @@ GameEngineClass = Class.extend({
 		return null;
 	},
 	
+	nextSpawnId: function () {
+	    return this.spawnCounter++;
+	},
+	
+	onSpawned: function(){},
+	onUnspawned: function(){},
 	
 	spawnEntity: function (typename, x, y, settings) {
 		var entityClass = Factory.nameClassMap[typename];
 		var es = settings || {};
-		var ent = new (entityClass)(x, y, es);
-		console.log("SPAWING " + typename + "WITH ID " + ent.id);
+		es.type = typename;
+		var ent = new(entityClass)(x, y, es);
+		console.log("SPAWING " + typename + " WITH ID " + ent.id);
+		console.log("AND THE ENT.TYPE IS " + ent.type);
+		console.log("THE FUCKING NAME IS " + ent.name);
 		gGameEngine.entities.push(ent);
 		if (ent.name) {
 			gGameEngine.namedEntities[ent.name] = ent;
 		}
-		//gGameEngine.onSpawned(ent);
+		gGameEngine.onSpawned(ent);
 		if (ent.type == "Player") {
 		    console.log('SPAWING PLAYER, ASSIGNING TO GPLAYER0');
 			this.gPlayer0 = ent;
 		}
+		console.log("HERE IS ENT");
+		console.log(ent);
 		return ent;
 	},
 	

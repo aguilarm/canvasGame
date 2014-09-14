@@ -35,6 +35,11 @@ ClientGameEngineClass = GameEngineClass.extend({
 		this.parent();
 		//console.log('gGameEngineUpdate, Client');
 		
+		var inputEngine = gInputEngine;
+		
+		if (!this.gPlayer0 || this.gPlayer0.isDead) {
+		    return;
+		}
 		var pInput = {
 			x: 0,
 			y: 0,
