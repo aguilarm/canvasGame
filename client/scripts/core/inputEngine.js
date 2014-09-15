@@ -77,6 +77,7 @@ InputEngineClass = Class.extend({
 	//----------------
 	onKeyUpEvent: function (keyCode, event) {
 		//when key is released, deactivate action
+		console.log('keyup called');
 		var code = keyCode;
 		var action = this.bindings[code];
 		if(action) {
@@ -84,6 +85,7 @@ InputEngineClass = Class.extend({
 		        event.preventDefault();
 			this.delayedKeyup.push(action);
 		}
+		console.log('keyup ran through');
 	},
 	//-----------------
 	//this can be called on update cycle to

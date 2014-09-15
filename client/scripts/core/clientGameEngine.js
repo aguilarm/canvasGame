@@ -48,7 +48,6 @@ ClientGameEngineClass = GameEngineClass.extend({
 			walking: false,
 		};
 		var move_dir = new Vec2(0, 0);
-		console.log(move_dir.y);
 		if (gInputEngine.state('move-up'))
 			move_dir.y -= 1;
 		if (gInputEngine.state('move-down'))
@@ -59,7 +58,6 @@ ClientGameEngineClass = GameEngineClass.extend({
 			move_dir.x += 1;
 		//check if a move key has been pressed, if so make walk
 		if (move_dir.LengthSquared()) {
-		    console.log('MOVING FOR REAL');
 			pInput.walking = true;
 			//Set move_dir to a unit vector in the same direction
 			//it's currently pointing

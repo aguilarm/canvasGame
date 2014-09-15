@@ -111,7 +111,7 @@ ClientPlayerClass = PlayerClass.extend({
         
     var ctx = gRenderEngine.context;
 
-    drawSprite("skele_20.png",120,120);
+    drawSprite("skele_20.png", gGameEngine.gPlayer0.pos.x , gGameEngine.gPlayer0.pos.y);
         
   },
  /* //-----------------------------------------
