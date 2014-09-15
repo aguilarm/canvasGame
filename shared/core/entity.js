@@ -78,8 +78,44 @@ EntityClass = Class.extend({
         vx:vel.x,
         vy:vel.y
       });
+     }
+    },
+    
+    //-----------------------------------------
+  getPhysicsSyncAdjustment: function () {
+    var out = {x:0, y:0};
+    var tp = this.targetPhys;
+    if (tp && !IS_SERVER) {
+      var op = this.tpOrig;
+      var dt = (new Date().getTime() - op.t)/1000;
+      if (dt < 0.2) {
+        var ploc = this.physBody.GetPosition();
+        var cx = ploc.x;
+        var cy = ploc.y;
+        var ox = op.x;
+        var oy = op.y;
+        var ovx = op.vx;
+        var ovy = op.vy;
+        var predx = ox + ovx * dt;
+        var predy = oy + ovy * dt;
+        var allowSlipTime = 0.1;
+        var dpred = Math.sqrt((predx-cx)*(predx-cx)+(predy-cy)*(predy-cy));
+        var dallow = Math.sqrt(ovx*ovx+ovy*ovy)*(allowSlipTime+dt)+10;
+        if (!this.snapped && dpred > dallow) {
+          var putx = predx + (cx - predx) * dallow/dpred;
+          var puty = predy + (cy - predy) * dallow/dpred;
+          this.physBody.SetPosition(new Vec2(putx, puty));
+          Logger.log("snap " + ox + " " + oy + " " + putx + " " + puty);
+        } else {
+          out.x = (predx - cx) * dpred / dallow * 0.1;
+          out.y = (predy - cy) * dpred / dallow * 0.1;
+        }
+      }
+      this.snapped = true;
     }
+    return out;
   },
+  
 	//-----------------------------
 	draw: function() {
 		//if there is a current sprite name, draw that sprite with the drawSprite function from spriteSheet

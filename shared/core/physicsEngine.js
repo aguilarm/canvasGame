@@ -34,7 +34,7 @@ PhysicsEngineClass = Class.extend({
 	
 	//----------------------------------------------
 	create: function() {
-		console.log('Creating world');
+		//console.log('Creating world');
 		//Vec2(x,y) specifies gravity vector (topdown has none)
 		//And a boolean allows or disallows sleep
 		gPhysicsEngine.world = new World(

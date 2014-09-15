@@ -76,15 +76,9 @@ GameEngineClass = Class.extend({
 	spawnEntity: function (typename, x, y, settings) {
 		var entityClass = Factory.nameClassMap[typename];
 		var es = settings || {};
-		console.log(es);
-		console.log(typename);
 		es.type = typename;
 		
 		var ent = new(entityClass)(x, y, es);
-		console.log(ent.type)
-		console.log("SPAWING " + typename + " WITH ID " + ent.id);
-		console.log("AND THE ENT.TYPE IS " + ent.type);
-		console.log("THE FUCKING NAME IS " + ent.name);
 		gGameEngine.entities.push(ent);
 		if (ent.name) {
 			gGameEngine.namedEntities[ent.name] = ent;
@@ -94,14 +88,14 @@ GameEngineClass = Class.extend({
 		    console.log('SPAWING PLAYER, ASSIGNING TO GPLAYER0');
 			this.gPlayer0 = ent;
 		}
-		console.log("HERE IS ENT");
-		console.log(ent);
 		return ent;
 	},
 	
 	run: function () {
 		this.fps++;
 		GlobalTimer.step();
+		
+		console.log('gGameEngine.run');
 		
 		var timeElapsed = this.clock.tick();
 		this.timeSinceGameUpdate += timeElapsed;
@@ -113,6 +107,7 @@ GameEngineClass = Class.extend({
 				this.updatePhysics();
 				this.timeSinceGameUpdate -= Constants.GAME_LOOP_HZ;
 				this.timeSincePhysicsUpdate -= Constants.PHYSICS_LOOP_HZ;
+				console.log('updatePhysics from gGameEngine.run');
 		}
 		
 		while (this.timeSincePhysicsUpdate >= Constants.PHYSICS_LOOP_HZ){
@@ -137,10 +132,18 @@ GameEngineClass = Class.extend({
 			}
 		}
 		
+		
 	},//end of update
 	//-----------------------------------------
 	updatePhysics: function() {
 		gPhysicsEngine.update();
+		//TODO only doing one player, should be doing a bunch
+	    var plyr = this.gPlayer0;
+	    console.log('player0 from gGameEngine base class');
+	    console.log(plyr);
+	    var pPos = plyr.physBody.GetPosition();
+	    plyr.pos.x = pPos.x;
+	    plyr.pos.y = pPos.y;
 	},
 	
 	

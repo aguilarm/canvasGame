@@ -110,7 +110,6 @@ ClientPlayerClass = PlayerClass.extend({
         if(this.isDead) return;
         
     var ctx = gRenderEngine.context;
-
     drawSprite("skele_20.png", gGameEngine.gPlayer0.pos.x , gGameEngine.gPlayer0.pos.y);
         
   },
