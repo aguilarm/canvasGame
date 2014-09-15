@@ -47,7 +47,7 @@ GameEngineClass = Class.extend({
 		gPhysicsEngine.create(Constants.PHYSICS_UPDATES_PER_SEC, false);
 		
 		//spawn player
-		this.spawnEntity("Player", 150, 100, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
+		this.gPlayer0 = this.spawnEntity("Player", 150, 100, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
 		console.log('spawning player from gameEngine.js');
 	},
 	//----------------------------------
@@ -76,8 +76,12 @@ GameEngineClass = Class.extend({
 	spawnEntity: function (typename, x, y, settings) {
 		var entityClass = Factory.nameClassMap[typename];
 		var es = settings || {};
+		console.log(es);
+		console.log(typename);
 		es.type = typename;
+		
 		var ent = new(entityClass)(x, y, es);
+		console.log(ent.type)
 		console.log("SPAWING " + typename + " WITH ID " + ent.id);
 		console.log("AND THE ENT.TYPE IS " + ent.type);
 		console.log("THE FUCKING NAME IS " + ent.name);

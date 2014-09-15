@@ -36,6 +36,8 @@ EntityClass = Class.extend({
 		this.pos.x = x;
 		this.pos.y = y;
 		
+		//TODO this works, but settings should be handled differently, probably entity specific.
+		this.type = settings.type;
 		//merge(this,settings);
 		//TODO Need to investigate this
 		//	this.spawnInfo = JSON.stringify(settings);

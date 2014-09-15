@@ -35,7 +35,7 @@ $(function(){
 	gRenderEngine.setup();
 	console.log('setup engines');
 	
-	gGameEngine.spawnEntity("Player", 100, 100, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
+	//gGameEngine.spawnEntity("Player", 100, 100, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
 	
 	//set a ready call just for funsies
 	var ready = true;

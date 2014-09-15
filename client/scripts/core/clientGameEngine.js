@@ -40,6 +40,7 @@ ClientGameEngineClass = GameEngineClass.extend({
 		if (!this.gPlayer0 || this.gPlayer0.isDead) {
 		    return;
 		}
+		//console.log('GPLAYER0 DISCOVERED ITS ALIVEE');
 		var pInput = {
 			x: 0,
 			y: 0,
@@ -84,7 +85,7 @@ ClientGameEngineClass = GameEngineClass.extend({
 			pInput.x += move_dir.x;
 			pInput.y += move_dir.y;
 		} else {
-		    console.log('STOP');
+		    //console.log('STOP');
 			pInput.walking = false;
 			pInput.x = 0;
 			pInput.y = 0;
