@@ -46,7 +46,6 @@ PhysicsEngineClass = Class.extend({
 	//-----------------------------------------------
 	update: function() {
 		var start = Date.now();
-		console.log('physicsEngine update');
 		gPhysicsEngine.world.Step(
 			Constants.PHYSICS_LOOP_HZ, //Framerate at which to update phyics
 			10,		//velocity iterations

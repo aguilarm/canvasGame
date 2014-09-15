@@ -76,8 +76,7 @@ InputEngineClass = Class.extend({
 	},
 	//----------------
 	onKeyUpEvent: function (keyCode, event) {
-		//when key is released, deactivate action
-		console.log('keyup called');
+		//when key is released, deactivate action next update
 		var code = keyCode;
 		var action = this.bindings[code];
 		if(action) {

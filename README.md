@@ -1,7 +1,7 @@
 canvasGame
 ==========
 
-Creating an html5 game using the canvas element and a ton of javascript, following the <a href="https://www.udacity.com/course/cs255">Udacity HTML5 Game Development course</a> as well as refrencing and the actual GRITS game code.  The Udacity course is a great resource, but it woefully fails at actually allowing someone to build an entire game engine and use it just following the class.  After the class, you can EDIT the game engine a little bit, and understand how key parts work, but a huge majority of it is still kind of a mystery.  So with this project I'm hoping to fill in the gaps.
+Creating an html5 game using the canvas element and a ton of (vanilla) javascript, following the <a href="https://www.udacity.com/course/cs255">Udacity HTML5 Game Development course</a> as well as refrencing and the actual GRITS game code.  The Udacity course is a great resource, but it woefully fails at actually allowing someone to build an entire game engine and use it just following the class.  After the class, you can EDIT the game engine a little bit, and understand how key parts work, but a huge majority of it is still kind of a mystery.  So with this project I'm hoping to fill in the gaps.
 
 ## Goal
 
@@ -13,5 +13,5 @@ First, I'm going to try to get the engine working on it's own and then add serve
 
 ## Progress
 
-The GameEngine class loads up the physics engine and input engine, and physics engine creates a box2d world.  An entity class is written with a player and weapon class on top but not utilized yet, and inputEngine does not appear to work right yet.
+I have a working assetloading system, a physics engine using box2d, an input handling engine, and rendering engine.  As of last updating this section, all of those systems work and will draw a skeleton character onto the canvas with a physics body.  No animations or interactions yet.
 

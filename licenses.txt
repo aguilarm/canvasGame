@@ -1,4 +1,20 @@
 -----------------------------------------------------
+The Box2D physics engine was developed by Erin Catto
+with the zlib license.  I have not modified it.
+-----------------------------------------------------
+
+-----------------------------------------------------
+The art used, such as the skeleton sprite, were made
+by Johannes Sjolund (wulax) found on opengameart.org
+as part of the LPC.  Used under the CC-BY-SA 3.0 and
+GPL 3.0 licenses.
+http://creativecommons.org/licenses/by-sa/3.0/
+http://www.gnu.org/licenses/gpl-3.0.html
+-----------------------------------------------------
+
+
+
+-----------------------------------------------------
 A large portion of this project is modified from GRITS game
 https://code.google.com/p/gritsgame/
 As well as from following the Udacity HTML5 Game Dev course
@@ -206,9 +222,3 @@ Used under the Apache 2.0 License
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
-
------------------------------------------------------
-The Box2D physics engine was developed by Erin Catto
-with the zlib license.  I have not modified it.
------------------------------------------------------

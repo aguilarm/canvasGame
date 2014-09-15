@@ -95,8 +95,6 @@ GameEngineClass = Class.extend({
 		this.fps++;
 		GlobalTimer.step();
 		
-		console.log('gGameEngine.run');
-		
 		var timeElapsed = this.clock.tick();
 		this.timeSinceGameUpdate += timeElapsed;
 		this.timeSincePhysicsUpdate += timeElapsed;
@@ -107,7 +105,6 @@ GameEngineClass = Class.extend({
 				this.updatePhysics();
 				this.timeSinceGameUpdate -= Constants.GAME_LOOP_HZ;
 				this.timeSincePhysicsUpdate -= Constants.PHYSICS_LOOP_HZ;
-				console.log('updatePhysics from gGameEngine.run');
 		}
 		
 		while (this.timeSincePhysicsUpdate >= Constants.PHYSICS_LOOP_HZ){
@@ -139,8 +136,6 @@ GameEngineClass = Class.extend({
 		gPhysicsEngine.update();
 		//TODO only doing one player, should be doing a bunch
 	    var plyr = this.gPlayer0;
-	    console.log('player0 from gGameEngine base class');
-	    console.log(plyr);
 	    var pPos = plyr.physBody.GetPosition();
 	    plyr.pos.x = pPos.x;
 	    plyr.pos.y = pPos.y;
