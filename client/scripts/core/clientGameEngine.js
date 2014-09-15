@@ -40,40 +40,25 @@ ClientGameEngineClass = GameEngineClass.extend({
 		if (!this.gPlayer0 || this.gPlayer0.isDead) {
 		    return;
 		}
-		//console.log('GPLAYER0 DISCOVERED ITS ALIVEE');
+		
 		var pInput = {
 			x: 0,
 			y: 0,
 			faceAngle0to7: 0, //Limit facing to 8 directions
 			walking: false,
 		};
-		
-		var move_dir = new Vec2(0,0);
-		
-		if (gInputEngine.state['move-up']){
-			//Adjust move_dir by 1 in the y direction
-			mov_dir.y -= 1;
-			console.log('MOVIN ON UP');
-		}
-		if (gInputEngine.state['move-down']){
-			//Adjust move_dir by 1 in the y direction
-			console.log('MOVIN ON DOWN');
-			mov_dir.y += 1;
-		}
-		if (gInputEngine.state['move-left']) {
-			// adjust the move_dir by 1 in the
-			// x direction.
-			console.log('MOVIN LEFT');
+		var move_dir = new Vec2(0, 0);
+		console.log(move_dir.y);
+		if (gInputEngine.state('move-up'))
+			move_dir.y -= 1;
+		if (gInputEngine.state('move-down'))
+			move_dir.y += 1;
+		if (gInputEngine.state('move-left'))
 			move_dir.x -= 1;
-		}
-		if (gInputEngine.state['move-right']) {
-			// adjust the move_dir by 1 in the
-			// x direction.
-			console.log('MOVIN RIGHT');
+		if (gInputEngine.state('move-right'))
 			move_dir.x += 1;
-		}
 		//check if a move key has been pressed, if so make walk
-		if (move_dir.LengthSquared()){
+		if (move_dir.LengthSquared()) {
 		    console.log('MOVING FOR REAL');
 			pInput.walking = true;
 			//Set move_dir to a unit vector in the same direction
