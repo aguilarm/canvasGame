@@ -94,8 +94,11 @@ ClientGameEngineClass = GameEngineClass.extend({
 		this.parent();
 		var fractionOfNextPhysicsUpdate = this.timeSincePhysicsUpdate / Constants.PHYSICS_LOOP_HZ;
 			
-			this.update();
+		this.update();
+		
 		this.draw(fractionOfNextPhysicsUpdate);
+		console.log('clearpressed from client game engine')
+		gInputEngine.clearPressed();
 	},
 	//-----------------------------------------
 	//This function draws the entire frame to the canvas each update.

@@ -85,7 +85,10 @@ InputEngineClass = Class.extend({
 		        event.preventDefault();
 			this.delayedKeyup.push(action);
 		}
-		console.log('keyup ran through');
+	},
+	//-----------------
+	bind: function (key, action) {
+		this.bindings[key] = action;
 	},
 	//-----------------
 	//this can be called on update cycle to
@@ -94,15 +97,31 @@ InputEngineClass = Class.extend({
 	state: function (action) {
     	return this.actions[action];
   	},
+  	//-----------------
 	clearState: function (action) {
 		this.actions[action] = false;
 	},
-	//Takes ASCII keycode and a string representing an action
-	//Actions are defined in the gameEngine
-	bind: function (key, action) {
-		this.bindings[key] = action;
-	}
-
+	//-----------------
+	pressed: function (action) {
+	    return this.presses[action];
+	},
+	//-----------------
+	clearPressed: function () {
+	    for (var i = 0; i < this.delayedKeyup.length; i++) {
+	        var action = this.delayedKeyup[i];
+	        this.actions[action] = false;
+	        this.locks[action] = false;
+	    }
+	    this.delayedKeyup = [];
+	    this.presses = {};
+	},
+    //-----------------------------------------
+    clearAllState: function () {
+        this.actions = {};
+        this.locks = {};
+        this.delayedKeyup = [];
+        this.presses = {};
+    },
 });
 
 KEY = {
