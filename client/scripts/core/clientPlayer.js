@@ -23,12 +23,13 @@ function AngleBetween(a, b) {
 ClientPlayerClass = PlayerClass.extend({
   _legSpriteAnimList: [],
   _legSpriteMaskAnimList: [],
-  _currLegAnimIndex:0,
+  _currMovAnimIndex:0,
   init: function (inputx, inputy, settings) {
 
         this.zIndex = 8;
         
    var names=["walk_up","walk_left","walk_down","walk_right"];
+   //run once for each animation
    for(var q=0; q < names.length; q++)
    {
            var sheet_down = new SpriteSheetAnimClass();
@@ -69,13 +70,13 @@ ClientPlayerClass = PlayerClass.extend({
         //what anim should I be playing?
          var move_dir = new Vec2(0, 0);
     if (gInputEngine.state('move-up'))
-      this._currLegAnimIndex = 0;
+      this._currMovAnimIndex = 0;
     else if (gInputEngine.state('move-down'))
-      this._currLegAnimIndex = 2;
+      this._currMovAnimIndex = 2;
     if (gInputEngine.state('move-left'))
-      this._currLegAnimIndex = 1;
+      this._currMovAnimIndex = 1;
     else if (gInputEngine.state('move-right'))
-      this._currLegAnimIndex = 3;
+      this._currMovAnimIndex = 3;
    
   },
 //-----------------------------------------
@@ -110,11 +111,11 @@ ClientPlayerClass = PlayerClass.extend({
         if(this.isDead) return;
         
     var ctx = gRenderEngine.context;
-    drawSprite("skele_20.png", gGameEngine.gPlayer0.pos.x , gGameEngine.gPlayer0.pos.y);
+    drawSprite("male_walk_18", gGameEngine.gPlayer0.pos.x , gGameEngine.gPlayer0.pos.y);
         
   },
  /* //-----------------------------------------
- //current character does not have legs the same way grits does
+ //current character does not have legs the same way grits does, and there are no teams
         _drawLegMask: function(ctx,settings)
     {
                 var spt = settings.player._legSpriteMaskAnimList[settings.player._currLegAnimIndex].getCurrentFrameStats();

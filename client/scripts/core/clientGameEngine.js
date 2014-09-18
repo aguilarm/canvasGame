@@ -58,7 +58,6 @@ ClientGameEngineClass = GameEngineClass.extend({
 			move_dir.x += 1;
 		//check if a move key has been pressed, if so make walk
 		if (move_dir.LengthSquared()) {
-		    console.log('move key pressed, walking?');
 			pInput.walking = true;
 			//Set move_dir to a unit vector in the same direction
 			//it's currently pointing
@@ -69,7 +68,6 @@ ClientGameEngineClass = GameEngineClass.extend({
 			pInput.x += move_dir.x;
 			pInput.y += move_dir.y;
 		} else {
-		    console.log('STOP');
 			pInput.walking = false;
 			pInput.x = 0;
 			pInput.y = 0;
@@ -97,7 +95,6 @@ ClientGameEngineClass = GameEngineClass.extend({
 		this.update();
 		
 		this.draw(fractionOfNextPhysicsUpdate);
-		console.log('clearpressed from client game engine')
 		gInputEngine.clearPressed();
 	},
 	//-----------------------------------------
