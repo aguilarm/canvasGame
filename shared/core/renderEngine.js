@@ -101,6 +101,22 @@ RenderEngineClass = Class.extend({
     	gRenderEngine.lastMouseCanvas.x = gRenderEngine.lastMouse.x;
     	gRenderEngine.lastMouseCanvas.y = gRenderEngine.lastMouse.y - gRenderEngine.canvas.offsetTop;
   	},
+  	
+    getCanvasPosition: function (screenPosition) {
+
+        //transfer position to world-space
+        return {
+            x: screenPosition.x - this.canvas.offsetLeft,
+            y: screenPosition.y - this.canvas.offsetTop
+            };
+    },
+
+    getScreenPosition: function(worldPosition) {
+        return {
+            x: -(gGameEngine.gMap.viewRect.x) + worldPosition.x,
+            y: -(gGameEngine.gMap.viewRect.y) + worldPosition.y
+        }
+    },
 });
 
 var gRenderEngine = new RenderEngineClass();

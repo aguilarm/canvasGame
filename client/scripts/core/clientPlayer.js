@@ -21,9 +21,9 @@ function AngleBetween(a, b) {
 }
 
 ClientPlayerClass = PlayerClass.extend({
-  _legSpriteAnimList: [],
+  _walkSpriteAnimList: [],
   _legSpriteMaskAnimList: [],
-  _currMovAnimIndex:0,
+  _currWalkAnimIndex:0,
   init: function (inputx, inputy, settings) {
 
         this.zIndex = 8;
@@ -38,34 +38,33 @@ ClientPlayerClass = PlayerClass.extend({
             //add sprites for each movement to anim sheet
                 for(var i =0; i < 8; i++)
                         sheet_down.pushFrame("male_" + names[q] + "_0" + i + ".png");
-                this._legSpriteAnimList.push(sheet_down);
+                this._walkSpriteAnimList.push(sheet_down);
         }
         
     // JJG: Ugly hack, we need the spritesheet before calling the parent.
     this.parent(inputx, inputy, settings);
   },
         //-----------------------------------------
-  update: function () {
-    this.parent();
+    update: function () {
+        this.parent();
 
         if(this.isDead) return;
         
-        this._legSpriteAnimList[this._currLegAnimIndex].pause(!this.walking);
-        this._legSpriteMaskAnimList[this._currLegAnimIndex].pause(!this.walking);
+        this._walkSpriteAnimList[this._currWalkAnimIndex].pause(!this.walking);
         //what anim should I be playing?
-         var move_dir = new Vec2(0, 0);
-    if (gInputEngine.state('move-up'))
-      this._currMovAnimIndex = 0;
-    else if (gInputEngine.state('move-down'))
-      this._currMovAnimIndex = 2;
-    if (gInputEngine.state('move-left'))
-      this._currMovAnimIndex = 1;
-    else if (gInputEngine.state('move-right'))
-      this._currMovAnimIndex = 3;
+        var move_dir = new Vec2(0, 0);
+        if (gInputEngine.state('move-up'))
+          this._currWalkAnimIndex = 0;
+        else if (gInputEngine.state('move-down'))
+          this._currWalkAnimIndex = 2;
+        if (gInputEngine.state('move-left'))
+          this._currWalkAnimIndex = 1;
+        else if (gInputEngine.state('move-right'))
+           this._currWalkAnimIndex = 3;
    
-  },
-//-----------------------------------------
-  on_stats: function (msg) {
+    },
+    //-----------------------------------------
+    on_stats: function (msg) {
         this.parent(msg);
 
         //note, we detect this before the parent fucntion gets a chance to modify us.
@@ -89,41 +88,30 @@ ClientPlayerClass = PlayerClass.extend({
                         show_respawn();
         }
                 
-  },
-  //-----------------------------------------
-  draw: function (fractionOfNextPhysicsUpdate) {
+    },
+    //-----------------------------------------
+    draw: function (fractionOfNextPhysicsUpdate) {
   
         if(this.isDead) return;
         
-    var ctx = gRenderEngine.context;
-    drawSprite("male_walk_18", gGameEngine.gPlayer0.pos.x , gGameEngine.gPlayer0.pos.y);
+        var ctx = gRenderEngine.context;
         
-  },
- /* //-----------------------------------------
- //current character does not have legs the same way grits does, and there are no teams
-        _drawLegMask: function(ctx,settings)
+        var interpolatedPosition = {x:this.pos.x, y:this.pos.y};
+        
+        if(this.pInput) {
+            // JJG: input is in  units/sec so we convert to units/update and multiply by the fraction of an update
+            interpolatedPosition.x += (this.pInput.x * Constants.PHYSICS_LOOP_HZ) * fractionOfNextPhysicsUpdate;
+            interpolatedPosition.y += (this.pInput.y * Constants.PHYSICS_LOOP_HZ) * fractionOfNextPhysicsUpdate;
+        }
+        
+        drawSprite("male_walk_down_00", gGameEngine.gPlayer0.pos.x , gGameEngine.gPlayer0.pos.y);
+        
+    },
+  
+    //--------------------------------------
+    _drawPlayerAvatar: function(ctx,settings)
     {
-                var spt = settings.player._legSpriteMaskAnimList[settings.player._currLegAnimIndex].getCurrentFrameStats();
-                {
-                  var dPX = (spt.w / 2.0),dPY = (spt.h / 2.0);
-                  //var sptidx = 0;
-                  if (settings.player.walking == true) sptidx = settings.player.legWalkFrameIdx;
-                  
-
-                  var rotRadians = 0;//settings.player.legRotation * (Math.PI / 180.0);
-                  ctx.translate(dPX, dPY);
-                  ctx.rotate(rotRadians);
-
-                  settings.player._legSpriteMaskAnimList[settings.player._currLegAnimIndex].draw(0,0,{ctx: ctx,noMapTrans:true});
-                 
-                  ctx.rotate(-rotRadians);
-                  ctx.translate(-dPX, -dPY);
-                }
-        },*/
-  //-----------------------------------------
-        _drawPlayerAvatar: function(ctx,settings)
-    {
-                var spt = settings.player._legSpriteAnimList[settings.player._currLegAnimIndex].getCurrentFrameStats();
+                var spt = settings.player._walkSpriteAnimList[settings.player._currWalkAnimIndex].getCurrentFrameStats();
                 {
                   var dPX = settings.locX ,dPY = settings.locY ;
                   //var sptidx = 0;
@@ -135,10 +123,10 @@ ClientPlayerClass = PlayerClass.extend({
                   ctx.rotate(rotRadians);
                 //  ctx.translate(-(spt.w / 2.0), -(spt.h / 2.0));
 
-                  settings.player._legSpriteAnimList[settings.player._currLegAnimIndex].draw(0,0,{ctx: ctx,noMapTrans:true});
+                  settings.player._walkSpriteAnimList[settings.player._currWalkAnimIndex].draw(0,0,{ctx: ctx,noMapTrans:true});
                  
                  //draw our color mask
-                        var sptleg = this._legSpriteMaskAnimList[this._currLegAnimIndex].getCurrentFrameStats();
+                        var sptleg = this._legSpriteMaskAnimList[this._currWalkAnimIndex].getCurrentFrameStats();
                         ctx.drawImage( gGameEngine.colorTintCanvas2, -(sptleg.w / 2.0),-(sptleg.h / 2.0));
                         
                   ctx.rotate(-rotRadians);
