@@ -96,16 +96,15 @@ ClientPlayerClass = PlayerClass.extend({
         
         var ctx = gRenderEngine.context;
         
-        var intrPos = {x:this.pos.x, y:this.pos.y};
+        /*var intrPos = {x:this.pos.x, y:this.pos.y};
         
         if(this.pInput) {
             // JJG: input is in  units/sec so we convert to units/update and multiply by the fraction of an update
             intrPos.x += (this.pInput.x * Constants.PHYSICS_LOOP_HZ) * fractionOfNextPhysicsUpdate;
             intrPos.y += (this.pInput.y * Constants.PHYSICS_LOOP_HZ) * fractionOfNextPhysicsUpdate;
-        }
+        }*/
         
-        drawSprite("male_walk_down_00", gGameEngine.gPlayer0.pos.x , gGameEngine.gPlayer0.pos.y);
-        this._drawPlayerAvatar(ctx, {player:this, locX:intrPos.x, locY:intrPos.y});
+        this._drawPlayerAvatar(ctx, {player:this, locX:gGameEngine.gPlayer0.pos.x, locY:gGameEngine.gPlayer0.pos.x});
     
         
         
@@ -122,11 +121,11 @@ ClientPlayerClass = PlayerClass.extend({
                   
 
                   var rotRadians = 0;//settings.player.legRotation * (Math.PI / 180.0);
-                  ctx.translate(dPX, dPY);
-                  ctx.rotate(rotRadians);
+                //  ctx.translate(dPX, dPY);
+                //  ctx.rotate(rotRadians);
                 //  ctx.translate(-(spt.w / 2.0), -(spt.h / 2.0));
 
-                  settings.player._walkSpriteAnimList[settings.player._currWalkAnimIndex].draw(0,0,{ctx: ctx,noMapTrans:true});
+                  settings.player._walkSpriteAnimList[settings.player._currWalkAnimIndex].draw(this.pos.x,this.pos.y,{ctx: ctx/*,noMapTrans:true*/});
 
                 }
                 
