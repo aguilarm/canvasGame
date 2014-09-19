@@ -1,0 +1,197 @@
+<!-- Copyright 2011 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<!--Modified by Mika Aguilar-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>canvasGame</title>
+        
+        <link href="./css/main.css" rel="stylesheet">
+        
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type="text/javascript" src="./scripts/yepnope.1.5.3-min.js"></script>
+        
+        <link rel="shortcut icon" href="img/favicon.ico"  type="image/x-icon" >
+        
+        <script async>
+        // http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
+        window.requestAnimFrame = (function(){
+        return  window.requestAnimationFrame       ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame    ||
+                function( callback ){
+                    window.setTimeout(callback, 1000 / 60);
+                };
+        })();
+        </script>
+        
+        <script type="text/javascript" id="GENERALJS">
+            //---------------------------------------
+            var $doc = function (selector) {
+                    return selector.charAt(0) == '#' ? document.getElementById(selector.substr(1)) : document.getElementsByTagName(selector);
+                };
+            
+            //---------------------------------------
+            var $new = function (name) {
+                    return document.createElement(name);
+                };
+                
+                function checkWait(conditionFunction, resultFunction)
+                {
+                    var tev = setInterval(function()
+                        {
+                            if(conditionFunction())
+                            {
+                                resultFunction();
+                                clearInterval(tev)
+                            }
+                        }, 1000);
+                }
+            
+        </script>
+        
+        <!-- VITALS -->
+        <script type="text/javascript" src="./scripts/pregame/xhr.js"></script>
+        <script type="text/javascript" src="./scripts/pregame/assetloader.js"></script>
+        <script type="text/javascript" src="../shared/core/core.js"></script>
+        
+        <script type="text/javascript">
+            IS_SERVER = false;
+            
+            var loadGame = function (gameURL, player_game_key) {
+                var inputScripts = [
+                    //Shared scripts
+                    "../shared/core/core.js",
+                    "../shared/core/box2D.js",
+                    "../shared/core/Constants.js",
+                    "../shared/core/Factory.js",
+                    "../shared/core/Timer.js",
+                    "../shared/core/Entity.js",
+                    "../shared/core/GameEngine.js",
+                    "../shared/core/PhysicsEngine.js",
+                    "../shared/core/Player.js",
+                    //TODO: tilemap "../shared/core/TileMap.js",
+                    "../shared/core/Weapon.js",
+                    "../shared/core/WeaponInstance.js",
+                    //TODO logger "../shared/core/Logger.js",
+                    "../shared/core/Util.js",
+                    
+                    //CLM note , we need to load the client scripts AFTER the shared scripts
+			        //allowing them to overload any global objects defined above.
+                    // Client-side scripts
+                    "./scripts/core/ClientGameEngine.js",
+                    "./scripts/core/ClientPlayer.js",
+                    "./scripts/core/InputEngine.js",
+                    "./scripts/core/RenderEngine.js",
+                    "./scripts/core/SpriteSheet.js",
+                ];
+                    
+                yepnope({
+                    load: inputScripts,
+                    complete: function()
+                    {
+                        gGameEngine.preloadAssets();
+                        checkWait(
+                            function()
+                            {
+                                return gGameEngine.preloadComplete;
+                            },
+                            function ()
+                            {
+                                gameLoadComplete(gameURL, player_game_key);
+                            }
+                        );
+                    }
+                });
+            };
+            
+            function readyToRock() {
+                console.log("ready to rock");
+                
+                //kick off animation
+                requestAnimFrame(run);
+                
+                //TODO loop_run, server stuff ?  
+            };
+            
+            function gameLoadComplete(gameURL, player_game_key)
+            {
+                //TODO this should grab info from the server, but not yet
+                //going to just set gPlayer0 here
+                
+                gGameEngine.gPlayer0 = gGameEngine.spawnEntity("Player", 150, 100, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
+                console.log('spawing player from gameLoadComplete (index.html)');
+                
+            }
+            
+        var run = function () {
+          //check for resizes and adjust accordingly.
+          if (gRenderEngine.canvas.width != window.innerWidth) {
+            gRenderEngine.canvas.width = window.innerWidth;
+          }
+          if (gRenderEngine.canvas.height != window.innerHeight) {
+            gRenderEngine.canvas.height = window.innerHeight;
+          }
+
+          
+                  gRenderEngine.context.clearRect ( 0 , 0 , gRenderEngine.canvas.width, gRenderEngine.canvas.height );
+                  gGameEngine.run();
+          requestAnimFrame(run);
+
+
+        };
+setTimeout((function(){requestAnimFrame(run);console.log('requestAnimFrame after 1200')}),1200);
+
+</script>
+</head>
+<body>
+<canvas id="mainCanvas"></canvas>
+<div id="logger">
+</div>
+<div id="imgPreload">
+	<img src="img/master.png" />
+</div>
+
+<script src="shared/core/box2D.js"></script>
+<script src="shared/core/core.js"></script>
+<script src="shared/core/logger.js"></script>
+<script src="shared/core/constants.js"></script>
+<script src="shared/core/factory.js"></script>
+<script src="shared/core/timer.js"></script>
+<script src="shared/core/spriteSheet.js"></script>
+<script src="shared/core/assetLoader.js"></script>
+
+<script src="shared/core/xhr.js"></script>
+<script src="shared/core/entity.js"></script>
+<script src="shared/core/player.js"></script>
+<script src="client/scripts/core/clientPlayer.js"></script>
+<script src="client/scripts/core/inputEngine.js"></script>
+<script src="shared/core/renderEngine.js"></script>
+<script src="shared/core/physicsEngine.js"></script>
+
+<script src="shared/core/gameEngine.js"></script>
+<script src="client/scripts/core/clientGameEngine.js"></script>
+<script src="shared/core/weaponInstance.js"></script>
+<script src="weapons/simpleProjectile.js"></script>
+<script src="core/initialize.js"></script>
+
+
+
+
+</body>
+</html>

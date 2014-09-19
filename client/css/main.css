@@ -1,9 +1,9 @@
 body, html {
-	margin: 0;
+    margin:0;
 }
 #mainCanvas {
-	-webkit-transition: background 0.4s;
-	transition: background 0.4s;
+	margin:0;
+	padding:0;
 }
 #imgPreload {
 	display: none;

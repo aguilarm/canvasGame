@@ -120,7 +120,6 @@ SpriteSheetAnimClass = Class.extend({
         loadSheet: function(sheetName, spriteSheetURI)
         {
                 this._spriteSheet = gSpriteSheets[sheetName];
-                console.log(gSpriteSheets[sheetName]);
                 if(this._spriteSheet != null)
                         return;
                 var sheet = new SpriteSheetClass();     
@@ -159,7 +158,6 @@ SpriteSheetAnimClass = Class.extend({
                 var spt = this._spriteSheet.getStats(this._spriteNames[cIDX]);
                 if(spt == null)
                         return;
-                console.log('drawspriteinternal');
                 __drawSpriteInternal(spt,this._spriteSheet,posX,posY,settings);
         },
         //-----------------------------------------
