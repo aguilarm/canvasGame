@@ -20,12 +20,14 @@ body, html {
 #welcomeScreen>div {
     width:600px;
     height:300px;
+    padding:10px;
+    text-align:center;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items:center;
-    background-color: #FF584C;
-    box-shadow:10px 10px 0 0 #B22D23;
+    background-color: #1262B2;
+    box-shadow:10px 10px 0 0 #39f;
 }
 #welcomeScreen button {
     width:80%;
@@ -37,5 +39,10 @@ body, html {
 }
 
 #welcomeScreen button:hover {
-    background-color:#2879CC;
+    background-color:#FF584C;
+}
+
+#welcomeScreen a{
+    color:white;
+    font-size:.6em;
 }

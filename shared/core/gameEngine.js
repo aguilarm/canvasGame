@@ -45,10 +45,9 @@ GameEngineClass = Class.extend({
 	setup: function() {
 		//create physics
 		gPhysicsEngine.create(Constants.PHYSICS_UPDATES_PER_SEC, false);
-		
-		//spawn player1
-		//TODO remove this and replace with server info or create NPC class
-		this.gPlayers.push(this.spawnEntity("Player", 150, 150, {name: "brotato", team: "nope", userID: "player1", displayName: "george"}));
+		//spawn player
+		//TODO since it's single player right now, this works.  but on multiplayer ill need to switch spawning method
+		this.gPlayer0 = this.spawnEntity("Player", 150, 100, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
 		console.log('spawning player from gameEngine.js');
 	},
 	//----------------------------------

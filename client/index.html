@@ -74,6 +74,7 @@ limitations under the License.
             IS_SERVER = false;
             
             var loadGame = function (gameURL, player_game_key) {
+                document.getElementById("startGame").innerHTML = "Loading...";
                 var inputScripts = [
                     //Shared scripts
                     "../shared/core/core.js",
@@ -109,7 +110,6 @@ limitations under the License.
                         checkWait(
                             function()
                             {
-                                console.log('waiting for preloadComplete...');
                                 return gGameEngine.preloadComplete;
                             },
                             function ()
@@ -134,10 +134,7 @@ limitations under the License.
             function gameLoadComplete(gameURL, player_game_key)
             {
                 //TODO this should grab info from the server, but not yet
-                //going to just set gPlayer0 here
-                
-                gGameEngine.gPlayer0 = gGameEngine.spawnEntity("Player", 150, 100, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
-                console.log('spawing player from gameLoadComplete (index.html)');
+
                 readyToRock();
             
                 //load our game and move the world forward
@@ -182,9 +179,10 @@ limitations under the License.
     
     <div id="welcomeScreen">
         <div>
-        <h1>Welcome to my WIP HTML5 Game!</h1>
-        <p>Press start to begin playing:</p>
+        <h1>canvasGame</h1>
         <button id="startGame" onclick='loadGame()'>START</button>
+        <br />
+        <a href="http://vm-0.aguilarm.kd.io/canvasGame/shared/">If running on Koding (kd.io) and game does not load, click here and click the continue link there</a>
         </div>
     </div>
     <canvas id="mainCanvas"></canvas>
