@@ -23,7 +23,7 @@ PlayerClass = EntityClass.extend({
 	isDead: false,
 	zIndex: 1,
 	init: function (inputx, inputy, settings) {
-		this.hsize = {x:26, y:26};
+		this.hsize = {x:35, y:50};
 		this.parent(inputx, inputy, settings);
 		var entityDef = {
 			id: "player",

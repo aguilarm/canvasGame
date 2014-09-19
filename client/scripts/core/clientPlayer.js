@@ -35,27 +35,12 @@ ClientPlayerClass = PlayerClass.extend({
            var sheet_down = new SpriteSheetAnimClass();
            sheet_down._animIncPerFrame = 0.75;
            sheet_down.loadSheet('master',"img/master.png");
-                for(var i =0; i < 10; i++)
-                        sheet_down.pushFrame(names[q] + "skele_0" + i + ".png");
-                for(var i =10; i < 30; i++)
-                        sheet_down.pushFrame(names[q] + "skele_" + i + ".png");
+            //add sprites for each movement to anim sheet
+                for(var i =0; i < 8; i++)
+                        sheet_down.pushFrame("male_" + names[q] + "_0" + i + ".png");
                 this._legSpriteAnimList.push(sheet_down);
         }
         
-        for(var q=0; q < names.length; q++)
-   {
-           var sheet_down = new SpriteSheetAnimClass();
-           sheet_down._animIncPerFrame = 0.75;
-           sheet_down.loadSheet('master',"img/master.png");
-                for(var i =0; i < 10; i++)
-                        sheet_down.pushFrame(names[q] + "skele_0" + i + ".png");
-                for(var i =10; i < 30; i++)
-                        sheet_down.pushFrame(names[q] + "skele_" + i + ".png");
-                this._legSpriteMaskAnimList.push(sheet_down);
-        }
-        
-        
-
     // JJG: Ugly hack, we need the spritesheet before calling the parent.
     this.parent(inputx, inputy, settings);
   },
