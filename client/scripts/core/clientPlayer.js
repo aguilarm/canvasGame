@@ -28,16 +28,27 @@ ClientPlayerClass = PlayerClass.extend({
 
         this.zIndex = 8;
         
-   var names=["walk_up","walk_left","walk_down","walk_right"];
-   //run once for each animation; so each animation has a new animclass
-   for(var q=0; q < names.length; q++)
+   var sides=["walk_left","walk_right"];
+   var upDown=["walk_up","walk_down"];
+   //walking sideways uses each animation frame, but up and down exclude the resting ones
+   for(var q=0; q < sides.length; q++)
    {
            var sheet_down = new SpriteSheetAnimClass();
-           sheet_down._animIncPerFrame = 0.75;
+           sheet_down._animIncPerFrame = 0.2;
            sheet_down.loadSheet('master',"img/master.png");
             //add sprites for each movement to anim sheet
                 for(var i =0; i < 8; i++)
-                        sheet_down.pushFrame("male_" + names[q] + "_0" + i);
+                        sheet_down.pushFrame("male_" + sides[q] + "_0" + i);
+                this._walkSpriteAnimList.push(sheet_down);
+        }
+    for(var q=0; q < upDown.length; q++)
+    {
+           var sheet_down = new SpriteSheetAnimClass();
+           sheet_down._animIncPerFrame = 0.2;
+           sheet_down.loadSheet('master',"img/master.png");
+            //add sprites for each movement to anim sheet
+                for(var i =1; i < 8; i++)
+                        sheet_down.pushFrame("male_" + upDown[q] + "_0" + i);
                 this._walkSpriteAnimList.push(sheet_down);
         }
         
@@ -54,13 +65,13 @@ ClientPlayerClass = PlayerClass.extend({
         //what anim should I be playing?
         var move_dir = new Vec2(0, 0);
         if (gInputEngine.state('move-up'))
-          this._currWalkAnimIndex = 0;
-        else if (gInputEngine.state('move-down'))
           this._currWalkAnimIndex = 2;
+        else if (gInputEngine.state('move-down'))
+          this._currWalkAnimIndex = 3;
         if (gInputEngine.state('move-left'))
-          this._currWalkAnimIndex = 1;
+          this._currWalkAnimIndex = 0;
         else if (gInputEngine.state('move-right'))
-           this._currWalkAnimIndex = 3;
+           this._currWalkAnimIndex = 1;
    
     },
     //-----------------------------------------
