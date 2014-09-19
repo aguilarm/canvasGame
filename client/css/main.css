@@ -4,15 +4,38 @@ body, html {
 #mainCanvas {
 	margin:0;
 	padding:0;
-}
-#imgPreload {
-	display: none;
+	display:none;
 }
 
-#logger {
-    position:fixed;
-    bottom:0;
-    z-index:150;
-    width:100%;
-    background-color:#39f;
+#welcomeScreen {
+    width:100vw;
+    height:100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:center;
+    font-family:Tahoma, sans-serif;
+    color:white;
+}
+#welcomeScreen>div {
+    width:600px;
+    height:300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:center;
+    background-color: #FF584C;
+    box-shadow:10px 10px 0 0 #B22D23;
+}
+#welcomeScreen button {
+    width:80%;
+    height:80px;
+    font-size: 50px;
+    background:none;
+    border: 3px solid #fff;
+    color:#fff;
+}
+
+#welcomeScreen button:hover {
+    background-color:#2879CC;
 }

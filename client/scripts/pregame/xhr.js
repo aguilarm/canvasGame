@@ -53,7 +53,7 @@ function saveMaster(data){
 				var sheet = new SpriteSheetClass();
 				gSpriteSheets['master'] = sheet;
 				console.log(gSpriteSheets);
-				sheet.load("img/master.png");
+				sheet.load("../img/master.png");
 				for (var key in obj.frames) {
 					var val = obj.frames[key];
 					var cx = val.frame.w * 0.5;
