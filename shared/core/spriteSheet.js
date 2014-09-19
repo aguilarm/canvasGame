@@ -26,7 +26,9 @@ See the License for the specific language governing permissions and
 //
 // would return the SpriteSheetClass object associated
 // to that URL, assuming that it exists.
-var gSpriteSheets = {};
+
+//I moved the declaration of this variable to xhr.js
+//var gSpriteSheets = {};
 
 	ImageCache = {};
 	loadAtlasImage = function(imagename){
@@ -118,9 +120,9 @@ SpriteSheetAnimClass = Class.extend({
         loadSheet: function(sheetName, spriteSheetURI)
         {
                 this._spriteSheet = gSpriteSheets[sheetName];
+                console.log(gSpriteSheets[sheetName]);
                 if(this._spriteSheet != null)
                         return;
-                        
                 var sheet = new SpriteSheetClass();     
                 sheet.load(spriteSheetURI);
                 
@@ -149,16 +151,15 @@ SpriteSheetAnimClass = Class.extend({
         draw: function(posX, posY, settings)
         {
                 if(this._spriteSheet == null) return;
-                
                 if(!this._paused)
                         this._currAnimIdx +=  this._animIncPerFrame;
                         
                 var cIDX = Math.floor(this._currAnimIdx) % this._spriteNames.length;
-                        
+
                 var spt = this._spriteSheet.getStats(this._spriteNames[cIDX]);
                 if(spt == null)
                         return;
-                        
+                console.log('drawspriteinternal');
                 __drawSpriteInternal(spt,this._spriteSheet,posX,posY,settings);
         },
         //-----------------------------------------

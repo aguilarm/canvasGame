@@ -24,7 +24,7 @@ function xhrGet(reqUri, reqCred, callback) {
 	//when the json is loaded completely and server is done
 	//xhr.addEventListener('loadend', xhrComplete, false);
 	//run the request	
-	xhr.open("GET", reqUri, true);
+	xhr.open("GET", reqUri, false);
 	
 	xhr.onreadystatechange = function(){
 		if(xhr.readyState == 4){
@@ -46,10 +46,13 @@ function xhrGet(reqUri, reqCred, callback) {
 	xhr.send();
 }
 //--------------------------------------------------------
+//should be set in spriteSheet.js once I handle asset loading correctly
+var gSpriteSheets = {};
 function saveMaster(data){
 				var obj = JSON.parse(data.response);
 				var sheet = new SpriteSheetClass();
 				gSpriteSheets['master'] = sheet;
+				console.log(gSpriteSheets);
 				sheet.load("img/master.png");
 				for (var key in obj.frames) {
 					var val = obj.frames[key];
@@ -58,5 +61,6 @@ function saveMaster(data){
 				
 					sheet.defSprite(key, val.frame.x, val.frame.y, val.frame.w, val.frame.h, cx, cy);
 				}
+				console.log(sheet);
 				
 		}

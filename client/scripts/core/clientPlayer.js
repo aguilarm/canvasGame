@@ -29,7 +29,7 @@ ClientPlayerClass = PlayerClass.extend({
         this.zIndex = 8;
         
    var names=["walk_up","walk_left","walk_down","walk_right"];
-   //run once for each animation
+   //run once for each animation; so each animation has a new animclass
    for(var q=0; q < names.length; q++)
    {
            var sheet_down = new SpriteSheetAnimClass();
@@ -37,7 +37,7 @@ ClientPlayerClass = PlayerClass.extend({
            sheet_down.loadSheet('master',"img/master.png");
             //add sprites for each movement to anim sheet
                 for(var i =0; i < 8; i++)
-                        sheet_down.pushFrame("male_" + names[q] + "_0" + i + ".png");
+                        sheet_down.pushFrame("male_" + names[q] + "_0" + i);
                 this._walkSpriteAnimList.push(sheet_down);
         }
         
@@ -96,15 +96,18 @@ ClientPlayerClass = PlayerClass.extend({
         
         var ctx = gRenderEngine.context;
         
-        var interpolatedPosition = {x:this.pos.x, y:this.pos.y};
+        var intrPos = {x:this.pos.x, y:this.pos.y};
         
         if(this.pInput) {
             // JJG: input is in  units/sec so we convert to units/update and multiply by the fraction of an update
-            interpolatedPosition.x += (this.pInput.x * Constants.PHYSICS_LOOP_HZ) * fractionOfNextPhysicsUpdate;
-            interpolatedPosition.y += (this.pInput.y * Constants.PHYSICS_LOOP_HZ) * fractionOfNextPhysicsUpdate;
+            intrPos.x += (this.pInput.x * Constants.PHYSICS_LOOP_HZ) * fractionOfNextPhysicsUpdate;
+            intrPos.y += (this.pInput.y * Constants.PHYSICS_LOOP_HZ) * fractionOfNextPhysicsUpdate;
         }
         
         drawSprite("male_walk_down_00", gGameEngine.gPlayer0.pos.x , gGameEngine.gPlayer0.pos.y);
+        this._drawPlayerAvatar(ctx, {player:this, locX:intrPos.x, locY:intrPos.y});
+    
+        
         
     },
   
@@ -124,32 +127,6 @@ ClientPlayerClass = PlayerClass.extend({
                 //  ctx.translate(-(spt.w / 2.0), -(spt.h / 2.0));
 
                   settings.player._walkSpriteAnimList[settings.player._currWalkAnimIndex].draw(0,0,{ctx: ctx,noMapTrans:true});
-                 
-                 //draw our color mask
-                        var sptleg = this._legSpriteMaskAnimList[this._currWalkAnimIndex].getCurrentFrameStats();
-                        ctx.drawImage( gGameEngine.colorTintCanvas2, -(sptleg.w / 2.0),-(sptleg.h / 2.0));
-                        
-                  ctx.rotate(-rotRadians);
-                  ctx.translate(-dPX, -dPY);
-                }
-                
-                //DRAW THE TOP
-                //determine the proper rotation for the top
-                {
-
-                  var rotRadians = -1.0 * Math.PI + settings.player.faceAngleRadians; // Initial sprite position faces up, rotate 1/4 turn clockwise first.
-                  ctx.translate(dPX, dPY);
-                  ctx.rotate(rotRadians);
-
-
-                drawSprite("turret.png", 0, 0, {ctx:ctx,noMapTrans:true});
-                
-                  //draw any weapons we have.
-                  for (var i = 0; i < settings.player.weapons.length; i++)
-                        if (settings.player.weapons[i] != null) settings.player.weapons[i].onDraw(this);
-
-                  ctx.rotate(-rotRadians);
-                  ctx.translate(-dPX, -dPY);
 
                 }
                 
