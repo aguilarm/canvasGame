@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 //----------------------------------
 //Modified by Mika Aguilar
 //----------------------------------
-
 //Abstracted XMLHTTPRequest
 function xhrGet(reqUri, reqCred, callback) {
 	//set the function that calls the xhrget
+	console.log('xhrget');
 	var caller = xhrGet.caller;
 	//set the request up
 	var xhr = new XMLHttpRequest();

@@ -130,14 +130,17 @@ ClientGameEngineClass = GameEngineClass.extend({
 	preloadComplete: false,
 	preloadAssets: function ()
 	{
+	    console.log('preloadAssets');
         //go load images first
         var assets = new Array();
         assets.push("img/master.png");
         //TODO maps,sounds
         loadAssets(assets, function() 
         {
+            console.log('loadAssets compeleted');
             xhrGet("img/master.json", false, 
                 function(data){
+                    console.log('xhr callback');
                     var obj = JSON.parse(data.response);
                     var sheet = new SpriteSheetClass();
                     gSpriteSheets['master'] = sheet;
@@ -157,7 +160,7 @@ ClientGameEngineClass = GameEngineClass.extend({
                         
                         sheet.defSprite(key, val.frame.x, val.frame.y, val.frame.w, val.frame.h, cx, cy);
                     }
-                    
+                    console.log('preloadComplete should = true');
                     gGameEngine.preloadComplete = true;
             });
         });

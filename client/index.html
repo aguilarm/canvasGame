@@ -109,11 +109,13 @@ limitations under the License.
                         checkWait(
                             function()
                             {
+                                console.log('waiting for preloadComplete...');
                                 return gGameEngine.preloadComplete;
                             },
                             function ()
                             {
                                 gameLoadComplete(gameURL, player_game_key);
+                                console.log('yepnopedone');
                             }
                         );
                     }
