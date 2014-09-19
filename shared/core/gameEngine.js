@@ -130,6 +130,9 @@ GameEngineClass = Class.extend({
 			}
 		}
 		
+		for (var p in this.gPlayers) {
+		    this.gPlayers[p].applyInputs();
+		}
 		
 	},//end of update
 	//-----------------------------------------

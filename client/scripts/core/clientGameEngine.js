@@ -125,6 +125,46 @@ ClientGameEngineClass = GameEngineClass.extend({
 			});
 		});*/
 	},
+	
+	//------------------------------------------------
+	preloadComplete: false,
+	preloadAssets: function ()
+	{
+        //go load images first
+        var assets = new Array();
+        assets.push("img/master.png");
+        //TODO maps,sounds
+        loadAssets(assets, function() 
+        {
+            xhrGet("img/master.json", false, 
+                function(data){
+                    var obj = JSON.parse(data.response);
+                    var sheet = new SpriteSheetClass();
+                    gSpriteSheets['master'] = sheet;
+                    sheet.load("img/master.png");
+                    
+                    for (var key in obj.frames)
+                    {
+                        var val = obj.frames[key];
+                        var cx=-val.frame.w * 0.5;
+                        var cy=-val.frame.h * 0.5;
+                        
+                        if(val.trimmed)
+                        {
+                            cx = val.spriteSourceSize.x - (val.sourceSize.w * 0.5);
+                            cy = val.spriteSourceSize.y - (val.sourceSize.h * 0.5);
+                        }
+                        
+                        sheet.defSprite(key, val.frame.x, val.frame.y, val.frame.w, val.frame.h, cx, cy);
+                    }
+                    
+                    gGameEngine.preloadComplete = true;
+            });
+        });
+        
+        //google says effects!@ here in comments,
+        //but no code is here. no idea why
+    }
 });
 
 var gGameEngine = new ClientGameEngineClass();

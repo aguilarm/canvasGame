@@ -24,7 +24,7 @@ limitations under the License.
         <link href="./css/main.css" rel="stylesheet">
         
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script type="text/javascript" src="./scripts/yepnope.1.5.3-min.js"></script>
+        <script type="text/javascript" src="./scripts/yepnope.1.5.4-min.js"></script>
         
         <link rel="shortcut icon" href="img/favicon.ico"  type="image/x-icon" >
         
@@ -66,9 +66,9 @@ limitations under the License.
         </script>
         
         <!-- VITALS -->
-        <script type="text/javascript" src="./scripts/pregame/xhr.js"></script>
-        <script type="text/javascript" src="./scripts/pregame/assetLoader.js"></script>
-        <script type="text/javascript" src="../shared/core/core.js"></script>
+        <script src="./scripts/pregame/xhr.js"></script>
+        <script src="./scripts/pregame/assetLoader.js"></script>
+        <script src="../shared/core/core.js"></script>
         
         <script type="text/javascript">
             IS_SERVER = false;
@@ -78,27 +78,27 @@ limitations under the License.
                     //Shared scripts
                     "../shared/core/core.js",
                     "../shared/core/box2D.js",
-                    "../shared/core/Constants.js",
-                    "../shared/core/Factory.js",
-                    "../shared/core/Timer.js",
-                    "../shared/core/Entity.js",
-                    "../shared/core/GameEngine.js",
-                    "../shared/core/PhysicsEngine.js",
-                    "../shared/core/Player.js",
+                    "../shared/core/constants.js",
+                    "../shared/core/factory.js",
+                    "../shared/core/timer.js",
+                    "../shared/core/entity.js",
+                    "../shared/core/gameEngine.js",
+                    "../shared/core/physicsEngine.js",
+                    "../shared/core/player.js",
                     //TODO: tilemap "../shared/core/TileMap.js",
-                    "../shared/core/Weapon.js",
-                    "../shared/core/WeaponInstance.js",
+                    //"../shared/core/weapon.js",
+                    //"../shared/core/WeaponInstance.js",
                     //TODO logger "../shared/core/Logger.js",
-                    "../shared/core/Util.js",
+                    //"../shared/core/Util.js",
                     
                     //CLM note , we need to load the client scripts AFTER the shared scripts
 			        //allowing them to overload any global objects defined above.
                     // Client-side scripts
-                    "./scripts/core/ClientGameEngine.js",
-                    "./scripts/core/ClientPlayer.js",
-                    "./scripts/core/InputEngine.js",
-                    "./scripts/core/RenderEngine.js",
-                    "./scripts/core/SpriteSheet.js",
+                    "./scripts/core/clientGameEngine.js",
+                    "./scripts/core/clientPlayer.js",
+                    "./scripts/core/inputEngine.js",
+                    "./scripts/core/renderEngine.js",
+                    "./scripts/core/spriteSheet.js",
                 ];
                     
                 yepnope({
@@ -136,8 +136,7 @@ limitations under the License.
                 
                 gGameEngine.gPlayer0 = gGameEngine.spawnEntity("Player", 150, 100, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
                 console.log('spawing player from gameLoadComplete (index.html)');
-                
-            }
+                readyToRock();
             
                 //load our game and move the world forward
                 
@@ -173,7 +172,7 @@ limitations under the License.
         //old forced loop start
         //setTimeout((function(){requestAnimFrame(run);console.log('requestAnimFrame after 1200')}),1200);
         
-        document.addEventListener('DOMContentLoaded', document_onload, false);
+        //document.addEventListener('DOMContentLoaded', document_onload, false);
         
     </script>
 </head>
@@ -183,7 +182,7 @@ limitations under the License.
         <div>
         <h1>Welcome to my WIP HTML5 Game!</h1>
         <p>Press start to begin playing:</p>
-        <button id="startGame">START</button>
+        <button id="startGame" onclick='loadGame()'>START</button>
         </div>
     </div>
     <canvas id="mainCanvas"></canvas>
