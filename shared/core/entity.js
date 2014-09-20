@@ -23,10 +23,13 @@ EntityClass = Class.extend({
 	size: {x:0,y:0},
 	last: {x:0,y:0},
 	zIndex: 0, //Entities draws small zIndex values first, and larger on top
+	currSpriteName: null,
+	
 	type: 0,
 	checkAgainst: 0,
 	collides: 0, //Zero means this will not collide
 	_killed: false,
+	lastCloseTeleportPos: null,
 	forcePos: null,
 	markForDeath: false, //Can be used to kill the entity next cycle
 	//----------------------------------------------
@@ -38,10 +41,9 @@ EntityClass = Class.extend({
 		
 		//TODO this works, but settings should be handled differently, probably entity specific.
 		this.type = settings.type;
-		//merge(this,settings);
-		//TODO Need to investigate this
-		//	this.spawnInfo = JSON.stringify(settings);
-		//},
+		merge(this,settings);
+		
+		this.spawnInfo = JSON.stringify(settings);
 	},
 	//can be overloaded by child classes
 	update: function(){
