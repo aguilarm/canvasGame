@@ -45,13 +45,81 @@ GameEngineClass = Class.extend({
 	setup: function() {
 		//create physics
 		gPhysicsEngine.create(Constants.PHYSICS_UPDATES_PER_SEC, false);
-		//spawn player
+		
+		gPhysicsEngine.addContactListener({
+		    BeginContact: function(idA, idB) {
+		        //?
+		    },
+		    
+		    PostSolve: function (bodyA, bodyB, impulse) {
+		        
+		        if (impulse < 0.1) return;
+		        //MEA: I think impulse weapons push stuff around rather than just hitting it and thats it
+		        var u = [bodyA.GetUserData(),bodyB.GetUserData()];
+		        var nm = ['',''];
+		        var typ = [-1,-1];//0,1,2 = player, projectile, wall
+		        
+		        //figure out what our player names are, and what types they are
+		        for (var i =0; i < 2; i++)
+		        {
+		            if(u[i] != null)
+		            {
+		                if(u[i].ent != null)
+		                {
+		                    nm[i] = u[i].ent.name || '';
+		                    if(u[i].ent.walkSpeed != null)
+		                        typ[i] = 0; //it's a player
+		                    else
+		                        typ[i] = 1; //either a projectile or enviro object
+		                }
+		                else
+		                {
+		                    typ[i] = 2; //it's a wall
+		                }
+		            }
+		        }
+		        //if this is player/player, or player/wall, ignore!
+		        if(typ[0] == 0)
+				    if(typ[1] == 0 || typ[1] == 2)
+					    return;
+				
+			    if(typ[1] == 0)
+				    if(typ[0] == 0 || typ[0] == 2)
+					    return;
+			if(IS_SERVER)		
+		    {
+			    //we care about sending this along, so do such.
+			    Server.broadcaster.q_collision({
+			        ent0: nm[0],
+			        ent1: nm[1],
+			        impulse: impulse,
+			    });
+		    }
+		    else
+		    {
+			    //if we're client ignore the collision unless it's projectile/wall
+			    if(typ[0] == 1)
+				    if(typ[1] != 2)
+					    return;
+				
+			    if(typ[1] == 1)
+				    if(typ[0] != 2)
+					    return;
+		    }
+		    
+	        gGameEngine.onCollisionTouch(bodyA,bodyB,impulse);
+            console.log('collision!');
+		    }
+		});
+		
+		//clm hax - force load a map
+		this.gMap = new TileMapLoaderClass();
+		this.gMap.load(mapOutside);
+		
+		//MEA spawn player
 		//TODO since it's single player right now, this works.  but on multiplayer ill need to switch spawning method
 		this.gPlayer0 = this.spawnEntity("Player", 150, 100, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
 		console.log('spawning player from gameEngine.js');
-		
-		this.gMap = new TileMapLoaderClass();
-		this.gMap.load(mapOutside);
 	},
 	//----------------------------------
 	
@@ -81,6 +149,19 @@ GameEngineClass = Class.extend({
 		var es = settings || {};
 		es.type = typename;
 		var ent = new(entityClass)(x, y, es);
+		    var msg = "SPAWNING " + typename + " WITH ID " + ent.id;
+        if (ent.name) {
+            msg += " WITH NAME " + ent.name;
+        }
+        if (es.displayName) {
+            msg += " WITH displayName " + es.displayName;
+        }
+        if (es.userID) {
+            msg += " WITH userID " + es.userID;
+        }
+        if (es.displayName) {
+            console.log(msg);
+        }
 		gGameEngine.entities.push(ent);
 		if (ent.name) {
 			gGameEngine.namedEntities[ent.name] = ent;
@@ -141,9 +222,11 @@ GameEngineClass = Class.extend({
 		gPhysicsEngine.update();
 		//TODO only doing one player, should be doing a bunch
 	    var plyr = this.gPlayer0;
+	    if (plyr) {
 	    var pPos = plyr.physBody.GetPosition();
 	    plyr.pos.x = pPos.x;
 	    plyr.pos.y = pPos.y;
+	    }
 	},
 	
 	

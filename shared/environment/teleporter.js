@@ -24,6 +24,7 @@ TeleporterClass = EntityClass.extend({
 
   onTouch: function (otherBody, point, impulse) {
     var otherEnt = otherBody.GetUserData().ent;
+    console.log('TELEPORTER.ONTOUCH');
     if (otherEnt.lastCloseTeleportPos == null) {
       otherEnt.centerAt(this.destination);
       otherEnt.lastCloseTeleportPos = {x:this.destination.x,y:this.destination.y};
