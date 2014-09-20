@@ -27,8 +27,6 @@ See the License for the specific language governing permissions and
 // would return the SpriteSheetClass object associated
 // to that URL, assuming that it exists.
 
-//I moved the declaration of this variable to xhr.js
-//var gSpriteSheets = {};
 
 	ImageCache = {};
 	loadAtlasImage = function(imagename){
@@ -181,19 +179,63 @@ function drawSprite(spritename, posX, posY) {
 };
 
 //------------------------------------------------------
-function __drawSpriteInternal(spt,sheet,posX,posY){
+function __drawSpriteInternal(spt,sheet,posX,posY,settings)
+{
 	if(spt == null || sheet == null)
 		return;
 	
+	var gMap = gGameEngine.gMap;
 	var hlf = {
 		x: spt.cx,
 		y: spt.cy
 	};
 	
+	var mapTrans = {x: gMap.viewRect.x, y: gMap.viewRect.y};
 	var ctx = gRenderEngine.context;
-	
-	ctx.drawImage(sheet.img,
+	if(settings)
+	{
+	    if(settings.noMapTrans)
+	    {
+	        mapTrans.x = 0;
+	        mapTrans.y = 0;
+	    }
+	    if(settings.ctx)
+	    {
+	        ctx = settings.ctx;
+        }
+	}
+	    
+	if(settings && settings.rotRadians != null)
+	{
+	    ctx.save();
+	        var rotRadians = Math.PI + settings.rotRadians;
+	        
+	        ctx.translate(posX - mapTrans.x, posY - mapTrans.y);
+	        ctx.rotate(rotRadians); //rotate in origin
+	        
+	        ctx.drawImage(sheet.img,
+	                                spt.x, spt.y,
+	                                spt.w, spt.h,
+	                                +hlf.x,
+	                                +hlf.y,
+	                                spt.w,
+	                                spt.h);
+        ctx.restore();
+        
+	}
+	else
+	{
+	    ctx.drawImage(sheet.img,
+	                                spt.x, spt.y,
+	                                spt.w, spt.h,
+	                                (posX - mapTrans.x) + (hlf.x),
+	                                (posY - mapTrans.y) + (hlf.y),
+	                                spt.w,
+	                                spt.h);
+	}
+	/*ctx.drawImage(sheet.img,
 				spt.x, spt.y, spt.w, spt.h,
 				posX + hlf.x, posY + hlf.y,
-				spt.w, spt.h);
-}
+				spt.w, spt.h);*/
+};
+var gSpriteSheets = {};
