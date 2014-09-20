@@ -80,7 +80,6 @@ GameEngineClass = Class.extend({
 		var entityClass = Factory.nameClassMap[typename];
 		var es = settings || {};
 		es.type = typename;
-		
 		var ent = new(entityClass)(x, y, es);
 		gGameEngine.entities.push(ent);
 		if (ent.name) {
