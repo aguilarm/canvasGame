@@ -1,5 +1,6 @@
 body, html {
     margin:0;
+    background-color:#322125;
 }
 #mainCanvas {
 	margin:0;
@@ -16,6 +17,7 @@ body, html {
     align-items:center;
     font-family:Tahoma, sans-serif;
     color:white;
+    background-color:white;
 }
 #welcomeScreen>div {
     width:670px;

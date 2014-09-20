@@ -17,6 +17,8 @@ See the License for the specific language governing permissions and
 
 ClientGameEngineClass = GameEngineClass.extend({
 	gSocket: null,
+	newMapPos: {x:0, y:0},
+	
 	init:function() {
 		this.parent();
 	},
@@ -83,9 +85,12 @@ ClientGameEngineClass = GameEngineClass.extend({
 		//Record and sent out inputs
 		this.gPlayer0.pInput = pInput;
 	    this.gPlayer0.sendUpdates();
-	    
+	    //TODO MEA this isn't right?
 	    this.gPlayer0.applyInputs();
 		
+		//recenter our map bounds based upon the player's centered position
+		this.newMapPos.x = this.gPlayer0.pos.x - (this.gMap.viewRect.w * 0.5);
+		this.newMapPos.y = this.gPlayer0.pos.y - (this.gMap.viewRect.h * 0.5);
 	},//end of update
 	//-----------------------------------------
 	run: function() {
@@ -101,6 +106,10 @@ ClientGameEngineClass = GameEngineClass.extend({
 	//This function draws the entire frame to the canvas each update.
 	draw: function (fractionOfNextPhysicsUpdate) {
 	    
+	    // Alpha-beta filter on camera
+        this.gMap.viewRect.x = parseInt(alphaBeta(this.gMap.viewRect.x, this.newMapPos.x, 0.9));
+        this.gMap.viewRect.y = parseInt(alphaBeta(this.gMap.viewRect.y, this.newMapPos.y, 0.9));
+    
 	    // Draw map.
 	    this.gMap.draw(null);
 	    

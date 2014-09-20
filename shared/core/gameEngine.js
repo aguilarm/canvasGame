@@ -118,11 +118,32 @@ GameEngineClass = Class.extend({
 		
 		//MEA spawn player
 		//TODO since it's single player right now, this works.  but on multiplayer ill need to switch spawning method
-		this.gPlayer0 = this.spawnEntity("Player", 150, 100, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
+		this.gPlayer0 = this.spawnEntity("Player", 1380.04, 1456.44, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
 		console.log('spawning player from gameEngine.js');
 	},
 	//----------------------------------
-	
+	//-----------------------------
+    onCollisionTouch: function(bodyA,bodyB,impulse)
+        {
+            if (impulse < 0.1) return;
+            var uA = bodyA?bodyA.GetUserData():null;
+            var uB = bodyB?bodyB.GetUserData():null;
+            //CLM commented out due to perf spew
+            //Logger.log('Touch' + uA + ' ' + uB + ' ' + uA.ent + ' ' + uB.ent);
+
+            if (uA != null) {
+            if (uA.ent != null && uA.ent.onTouch) {
+                uA.ent.onTouch(bodyB, null, impulse);
+            }
+        }
+
+            if (uB != null) {
+            if (uB.ent != null && uB.ent.onTouch) {
+                uB.ent.onTouch(bodyA, null, impulse);
+            }
+            }
+    },
+    
 	getTime: function() { return this.currentTick * 0.05; },
 	
 	getEntityByName: function(name) { return this.namedEntities[name];},

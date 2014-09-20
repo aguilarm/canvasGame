@@ -54,6 +54,7 @@ EntityClass = Class.extend({
 		}
 		//if we are forcing a position, set it in Physics, move the physBody there as well as the sprite?
 		if(this.forcePos) {
+		    console.log('forcepos!');
 			this.physBody.SetPosition(new Vec2(this.forcePos.x, this.forcePos.y));
 			this.pos.x = this.forcePos.x;
 			this.pos.y = this.forcePos.y;

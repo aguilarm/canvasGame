@@ -18,8 +18,8 @@ var TileMapLoaderClass = Class.extend({
   viewRect: {
     "x": 0,
     "y": 0,
-    "w": 512,
-    "h": 512
+    "w": 1440,
+    "h": 800
   },
   numXTiles: 100,
   numYTiles: 100,
@@ -28,8 +28,8 @@ var TileMapLoaderClass = Class.extend({
     "y": 32
   },
   pixelSize: {
-    "x": 64,
-    "y": 64
+    "x": 32,
+    "y": 32
   },
   preCacheCanvasArray:null,
   imgLoadCount:0,
