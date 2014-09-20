@@ -60,6 +60,12 @@ EntityClass = Class.extend({
 		//save current position this update under last pos for later
 		this.last.x = this.pos.x;
 		this.last.y = this.pos.y;
+		
+		//once we get 100 units from the teleporter, we can re-enter
+		if (this.lastCloseTeleportPos != null && disSq(this.pos, this.lastCloseTeleportPos) > (100*100)) {
+		    //we can teleport again
+		    this.lastCloseTeleportPos = null;
+		}
 	},
 	//----------------------------
 	sendPhysicsUpdates: function (clientControlledPhysics) {
