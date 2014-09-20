@@ -117,6 +117,15 @@ RenderEngineClass = Class.extend({
             y: -(gGameEngine.gMap.viewRect.y) + worldPosition.y
         }
     },
+    getWorldPosition: function (screenPosition) {
+        var gMap = gGameEngine.gMap;
+
+        //transfer position to world-space
+        return {
+            x: screenPosition.x + gMap.viewRect.x,
+            y: screenPosition.y + gMap.viewRect.y
+        };
+    },
 });
 
 var gRenderEngine = new RenderEngineClass();
