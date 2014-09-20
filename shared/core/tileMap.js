@@ -35,6 +35,7 @@ var TileMapLoaderClass = Class.extend({
   imgLoadCount:0,
   initialize: function () {},
   load: function (map) {
+      console.log('loadmap');
     this.currMapData = map;
     this.numXTiles = map.width;
     this.numYTiles = map.height;

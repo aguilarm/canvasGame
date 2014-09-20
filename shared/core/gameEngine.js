@@ -49,6 +49,9 @@ GameEngineClass = Class.extend({
 		//TODO since it's single player right now, this works.  but on multiplayer ill need to switch spawning method
 		this.gPlayer0 = this.spawnEntity("Player", 150, 100, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
 		console.log('spawning player from gameEngine.js');
+		
+		this.gMap = new TileMapLoaderClass();
+		this.gMap.load(mapOutside);
 	},
 	//----------------------------------
 	
