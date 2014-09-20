@@ -16,23 +16,25 @@ See the License for the specific language governing permissions and
 //----------------------------------
 
 PlayerClass = EntityClass.extend({
-	walkSpeed: 35*5,
+	walkSpeed: 52*3, //move 3 tiles/sec
 	walking: false,
 	physBody: null,
 	faceAngleRadians: 0,
+	team: 0,  //0 or 1
 	isDead: false,
 	zIndex: 1,
 	init: function (inputx, inputy, settings) {
-		this.hsize = {x:35, y:50};
+		settings.hsize = {x:35, y:50};
 		this.parent(inputx, inputy, settings);
 		var entityDef = {
 			id: "player",
 			x: this.pos.x,
 			y: this.pos.y,
-			halfHeight: this.hsize.x / 2,
-			halfWidth: this.hsize.y / 2,
+			halfHeight: this.hsize.x / 2, //JJG: divide by 2 to let the player squeeze through narrow corridors
+			halfWidth: this.hsize.y / 2,  //MEA: not sure I'll need this, but leaving for now
 			damping: 0,
 			angle: 0,
+			categories: ['player', settings.team == 0 ? 'team0' : 'team1'],
 			collidesWith: ['all'],
 			userData: {
 				"id": "player",
@@ -46,6 +48,7 @@ PlayerClass = EntityClass.extend({
 	},
 	//---------------------------------------------------
 	update: function(){
+	    //TODO: this would normally handle respawns/deaths
 		this.physBody.SetActive(true);
 	},
 	//---------------------------------------------------
