@@ -110,15 +110,18 @@ ClientPlayerClass = PlayerClass.extend({
         
         var ctx = gRenderEngine.context;
         
-        /*var intrPos = {x:this.pos.x, y:this.pos.y};
+        var intrPos = {x:this.pos.x, y:this.pos.y};
         
         if(this.pInput) {
             // JJG: input is in  units/sec so we convert to units/update and multiply by the fraction of an update
             intrPos.x += (this.pInput.x * Constants.PHYSICS_LOOP_HZ) * fractionOfNextPhysicsUpdate;
             intrPos.y += (this.pInput.y * Constants.PHYSICS_LOOP_HZ) * fractionOfNextPhysicsUpdate;
-        }*/
+        }
         
-        this._drawPlayerAvatar(ctx, {player:this, locX:gGameEngine.gPlayer0.pos.x, locY:gGameEngine.gPlayer0.pos.x});
+        var dPX = gRenderEngine.getScreenPosition(intrPos).x;
+        var dPY = gRenderEngine.getScreenPosition(intrPos).y;
+        
+        this._drawPlayerAvatar(ctx, {player:this, locX:dPX, locY:dPY});
     
         
         

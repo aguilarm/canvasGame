@@ -16,7 +16,7 @@ See the License for the specific language governing permissions and
 //----------------------------------
 
 PlayerClass = EntityClass.extend({
-	walkSpeed: 52*5,
+	walkSpeed: 35*5,
 	walking: false,
 	physBody: null,
 	faceAngleRadians: 0,

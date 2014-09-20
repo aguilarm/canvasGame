@@ -127,7 +127,7 @@ PhysicsEngineClass = Class.extend({
 		if (entityDef.categories && entityDef.categories.length) {
             fixtureDefinition.filter.categories = 0x0000;
             for (var i = 0; i < entityDef.categories.length; i++)
-            fixtureDefinition.filter.categoryBits |= GRITS_COLLISION_GROUP[entityDef.categories[i]];
+            fixtureDefinition.filter.categoryBits |= COLLISION_GROUP[entityDef.categories[i]];
 
         } else fixtureDefinition.filter.categoryBits = 0x0001;
 
@@ -137,7 +137,7 @@ PhysicsEngineClass = Class.extend({
             //If you fire a bullet that should collide with everything, the default maskBits is 0xffff, and thus will match everything.		
             fixtureDefinition.filter.maskBits = 0x0000;
             for (var i = 0; i < entityDef.collidesWith.length; i++)
-            fixtureDefinition.filter.maskBits |= GRITS_COLLISION_GROUP[entityDef.collidesWith[i]];
+            fixtureDefinition.filter.maskBits |= COLLISION_GROUP[entityDef.collidesWith[i]];
 
         } else fixtureDefinition.filter.maskBits = 0xFFFF;
 
