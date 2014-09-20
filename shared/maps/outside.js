@@ -32,7 +32,7 @@ var mapOutside = { "height":30,
  "tilesets":[
         {
          "firstgid":1,
-         "image":"..\/..\/..\/Dump\/LPC_Terrain_0\/terrain.png",
+         "image":"..\/Dump\/LPC_Terrain_0\/terrain.png",
          "imageheight":1024,
          "imagewidth":1024,
          "margin":0,

@@ -18,16 +18,16 @@ body, html {
     color:white;
 }
 #welcomeScreen>div {
-    width:600px;
+    width:670px;
     height:300px;
-    padding:10px;
     text-align:center;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-end;
     align-items:center;
-    background-color: #1262B2;
-    box-shadow:10px 10px 0 0 #39f;
+    background-image:url(../img/logoscreen.png);
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 #welcomeScreen button {
     width:80%;
@@ -43,6 +43,6 @@ body, html {
 }
 
 #welcomeScreen a{
-    color:white;
+    color:#000;
     font-size:.6em;
 }
