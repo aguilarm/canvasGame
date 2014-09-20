@@ -28,6 +28,20 @@ CircleShape = Box2D.Collision.Shapes.b2CircleShape;
 DebugDraw = Box2D.Dynamics.b2DebugDraw;
 RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef;
 
+COLLISION_GROUP = {
+  'player': 0x0001,
+  'team0': 0x0001 << 1,
+  'team1': 0x0001 << 2,
+  'projectile': 0x0001 << 3,
+  'pickupobject': 0x0001 << 4,
+
+  //map objects,
+  'mapobject': 0x0001 << 5,
+  'projectileignore': 0x0001 << 6
+
+  ,
+  'all': 0xFFFF
+}
 
 PhysicsEngineClass = Class.extend({
 	world: null,
@@ -41,12 +55,29 @@ PhysicsEngineClass = Class.extend({
 			new Vec2(0,0),
 			false
 		);
-	},
+		
+		Box2D.Common.b2Settings.b2_maxTranslation = 99999;
+        Box2D.Common.b2Settings.b2_maxTranslationSquared = Box2D.Common.b2Settings.b2_maxTranslation * Box2D.Common.b2Settings.b2_maxTranslation;
 	
+	},
+    //-----------------------------------------	
+    addContactListener: function (callbacks) {
+        var listener = new Box2D.Dynamics.b2ContactListener;
+        if (callbacks.BeginContact) listener.BeginContact = function (contact) {
+            callbacks.BeginContact(contact.GetFixtureA().GetBody(), contact.GetFixtureB().GetBody());
+        }
+        if (callbacks.EndContact) listener.EndContact = function (contact) {
+            callbacks.EndContact(contact.GetFixtureA().GetBody(), contact.GetFixtureB().GetBody());
+        }
+        if (callbacks.PostSolve) listener.PostSolve = function (contact, impulse) {
+            callbacks.PostSolve(contact.GetFixtureA().GetBody(), contact.GetFixtureB().GetBody(), impulse.normalImpulses[0]);
+        }
+        this.world.SetContactListener(listener);
+    },
 	//-----------------------------------------------
 	update: function() {
 		var start = Date.now();
-		gPhysicsEngine.world.Step(
+		this.world.Step(
 			Constants.PHYSICS_LOOP_HZ, //Framerate at which to update phyics
 			10,		//velocity iterations
 			10		//position iterations
@@ -74,29 +105,90 @@ PhysicsEngineClass = Class.extend({
 		
 		bodyDef.position.x = entityDef.x;
 		bodyDef.position.y = entityDef.y;
-		
+		if (entityDef.userData) bodyDef.userData = entityDef.userData;
+        if (entityDef.angle) bodyDef.angle = entityDef.angle;
+        if (entityDef.damping) bodyDef.linearDamping = entityDef.damping;
 		//Invokes box2d to create a physics object
 		var body = this.registerBody(bodyDef);
-		var fixtureDefinition = new FixtureDef();
 		
+		var fixtureDefinition = new FixtureDef();
 		if(entityDef.useBouncyFixture){
 			fixtureDefinition.density = 1.0;
 			fixtureDefinition.friction = 0;
 			fixtureDefinition.restitution = 1.0;
 		}
+		else
+		{
+		    fixtureDefinition.density = 1.0;
+		    fixtureDefinition.friction = 0; //0.5;//0.0;
+		    fixtureDefinition.restitution = 0; //0.2;
+		}
 		
-		//Now we define the shape of this object as a box
-		fixtureDefinition.shape = new PolygonShape();
-		fixtureDefinition.shape.SetAsBox(entityDef.halfWidth, entityDef.halfHeight);
-		body.CreateFixture(fixtureDefinition);
-		
-		return body;
-	},
+		if (entityDef.categories && entityDef.categories.length) {
+            fixtureDefinition.filter.categories = 0x0000;
+            for (var i = 0; i < entityDef.categories.length; i++)
+            fixtureDefinition.filter.categoryBits |= GRITS_COLLISION_GROUP[entityDef.categories[i]];
+
+        } else fixtureDefinition.filter.categoryBits = 0x0001;
+
+        if (entityDef.collidesWith && entityDef.collidesWith.length) {
+             //For example, if walls are category 0x01, and ghosts are category 0x02, you can set ghost.maskBits = 0x01 to have ghosts only check collisions 
+            //with walls (and anything else that is in category 1).
+            //If you fire a bullet that should collide with everything, the default maskBits is 0xffff, and thus will match everything.		
+            fixtureDefinition.filter.maskBits = 0x0000;
+            for (var i = 0; i < entityDef.collidesWith.length; i++)
+            fixtureDefinition.filter.maskBits |= GRITS_COLLISION_GROUP[entityDef.collidesWith[i]];
+
+        } else fixtureDefinition.filter.maskBits = 0xFFFF;
+
+        if (entityDef.radius) {
+            fixtureDefinition.shape = new CircleShape(entityDef.radius);
+            body.CreateFixture(fixtureDefinition);
+        } else if (entityDef.polyPoints) {
+     
+            var points = entityDef.polyPoints;
+            var vecs = [];
+            for (var i = 0; i < points.length; i++) {
+                var vec = new Vec2();
+                vec.Set(points[i].x, points[i].y);
+                vecs[i] = vec;
+            }
+            fixtureDefinition.shape = new PolygonShape;
+            fixtureDefinition.shape.SetAsArray(vecs, vecs.length);
+            body.CreateFixture(fixtureDefinition);
+      
+        } 
+	    else { //we're a box!
+            fixtureDefinition.shape = new PolygonShape;
+            fixtureDefinition.shape.SetAsBox(entityDef.halfWidth, entityDef.halfHeight);
+            body.CreateFixture(fixtureDefinition);
+        }
+
+        return body;
+
+    },
 	
 	//-------------------------------------------------
-	removeBody: function (obj) {
+	removeBodyAsObj: function (obj) {
 		this.world.DestroyBody(obj);
-	}
+	},
+	//-------------------------------------------------
+	setVelocity: function (bodyId, x, y) {
+        var body = this.bodiesMap[bodyId];
+        body.SetLinearVelocity(new Vec2(x, y));
+    },
+    //-----------------------------------------
+    getVelocity: function (body) {
+        return body.GetLinearVelocity();
+    },
+    //-----------------------------------------
+    getPosition: function (body) {
+        return body.GetPosition();
+    },
+    //-----------------------------------------
+    setPosition: function (body, pos) {
+        body.SetPosition(pos);
+    },
 });
 
 var gPhysicsEngine = new PhysicsEngineClass();
