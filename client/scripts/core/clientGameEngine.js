@@ -25,8 +25,25 @@ ClientGameEngineClass = GameEngineClass.extend({
 	//---------------------------------
 	setup: function() {
 		this.parent();
-		//console.log('running clientGameEngine setup');
 		
+		gInputEngine.bind(gInputEngine.KEY.W, 'move-up');
+        gInputEngine.bind(gInputEngine.KEY.S, 'move-down');
+        gInputEngine.bind(gInputEngine.KEY.A, 'move-left');
+        gInputEngine.bind(gInputEngine.KEY.D, 'move-right');
+        
+        gInputEngine.bind(gInputEngine.KEY.SHIFT, 'run');
+        
+        //TODO MEA change these to 'attack_up' etc and make these stop the character to shoot/swing weapon
+        //gInputEngine.bind(gInputEngine.KEY.UP_ARROW, 'fire-up');
+        //gInputEngine.bind(gInputEngine.KEY.DOWN_ARROW, 'fire-down');
+        //gInputEngine.bind(gInputEngine.KEY.LEFT_ARROW, 'fire-left');
+        //gInputEngine.bind(gInputEngine.KEY.RIGHT_ARROW, 'fire-right');
+
+        //firing
+        //gInputEngine.bind(gInputEngine.KEY.MOUSE1, 'fire0-mouse');
+        //gInputEngine.bind(gInputEngine.KEY.SHIFT, 'fire1-instead-of-0');
+        //gInputEngine.bind(gInputEngine.KEY.MOUSE2, 'fire1-mouse');
+        //gInputEngine.bind(gInputEngine.KEY.SPACE, 'fire2');
 		//spawn the player when game starts
 		//TODO this is probably not the best place to put this or even a great way to do it, but for now...
 		
