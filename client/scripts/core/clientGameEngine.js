@@ -83,7 +83,23 @@ ClientGameEngineClass = GameEngineClass.extend({
 			move_dir.Normalize();
 			//Then multiply move_dir by players set walkSpeed, this
 			//allows us to modify walkSpeed outside of this function
-			move_dir.Multiply(this.gPlayer0.walkSpeed);
+			//MEA Added a check to see if we should be running or not
+			if(!gInputEngine.state('run')){
+			    move_dir.Multiply(this.gPlayer0.walkSpeed);
+			    //check animation speed, reset if needed
+			    if (this.gPlayer0._walkSpriteAnimList[0]._animIncPerFrame != 0.2){
+    			    for(i = 0;i < 4;i++){
+			            this.gPlayer0._walkSpriteAnimList[i]._animIncPerFrame = 0.2;
+			        }
+			    }
+			}
+			if(gInputEngine.state('run')){
+			    move_dir.Multiply(this.gPlayer0.walkSpeed * 1.8);
+			    //change the animation speed to match
+			    for(i = 0;i < 4;i++){
+			        this.gPlayer0._walkSpriteAnimList[i]._animIncPerFrame = 0.4;
+			    }
+			}
 			pInput.x += move_dir.x;
 			pInput.y += move_dir.y;
 		} else {
@@ -102,7 +118,7 @@ ClientGameEngineClass = GameEngineClass.extend({
 		//Record and sent out inputs
 		this.gPlayer0.pInput = pInput;
 	    this.gPlayer0.sendUpdates();
-	    //TODO MEA this isn't right?
+	    
 	    this.gPlayer0.applyInputs();
 		
 		//recenter our map bounds based upon the player's centered position
