@@ -86,11 +86,14 @@ limitations under the License.
                     "../shared/core/gameEngine.js",
                     "../shared/core/physicsEngine.js",
                     "../shared/core/player.js",
-                    //TODO: tilemap "../shared/core/TileMap.js",
+                    "../shared/core/tileMap.js",
                     //"../shared/core/weapon.js",
                     //"../shared/core/WeaponInstance.js",
                     //TODO logger "../shared/core/Logger.js",
                     //"../shared/core/Util.js",
+                    
+                    "../shared/maps/outside.js",
+                    
                     
                     //CLM note , we need to load the client scripts AFTER the shared scripts
 			        //allowing them to overload any global objects defined above.
@@ -185,30 +188,8 @@ limitations under the License.
         <a href="http://vm-0.aguilarm.kd.io/canvasGame/shared/">If running on Koding (kd.io) and game does not load, click here and click the continue link there</a>
         </div>
     </div>
-    <canvas id="mainCanvas"></canvas>
     
-<!--<script src="shared/core/box2D.js"></script>
-<script src="shared/core/core.js"></script>
-<script src="shared/core/logger.js"></script>
-<script src="shared/core/constants.js"></script>
-<script src="shared/core/factory.js"></script>
-<script src="shared/core/timer.js"></script>
-<script src="shared/core/spriteSheet.js"></script>
-<script src="shared/core/assetLoader.js"></script>
-
-<script src="shared/core/xhr.js"></script>
-<script src="shared/core/entity.js"></script>
-<script src="shared/core/player.js"></script>
-<script src="client/scripts/core/clientPlayer.js"></script>
-<script src="client/scripts/core/inputEngine.js"></script>
-<script src="shared/core/renderEngine.js"></script>
-<script src="shared/core/physicsEngine.js"></script>
-
-<script src="shared/core/gameEngine.js"></script>
-<script src="client/scripts/core/clientGameEngine.js"></script>
-<script src="shared/core/weaponInstance.js"></script>
-<script src="weapons/simpleProjectile.js"></script>
-<script src="core/initialize.js"></script>-->
+    <canvas id="mainCanvas"></canvas>
 
 </body>
 </html>

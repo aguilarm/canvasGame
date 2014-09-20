@@ -133,7 +133,12 @@ ClientGameEngineClass = GameEngineClass.extend({
         //go load images first
         var assets = new Array();
         assets.push("img/master.png");
-        //TODO maps,sounds
+        
+        var map = mapOutside;
+        for (var i = 0; i < map.tilesets.length; i++) {
+            assets.push("img/" + map.tilesets[i].image.replace(/^.*[\\\/]/, ''));
+        }
+        //TODO sounds
         loadAssets(assets, function() 
         {
             xhrGet("img/master.json", false, 
