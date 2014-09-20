@@ -100,8 +100,11 @@ ClientGameEngineClass = GameEngineClass.extend({
 	//-----------------------------------------
 	//This function draws the entire frame to the canvas each update.
 	draw: function (fractionOfNextPhysicsUpdate) {
-		//Just to get this working with one entity, I'm not adding the zIndex support yet
-		//and I'm just going to draw each entity active no matter
+	    
+	    // Draw map.
+	    this.gMap.draw(null);
+	    
+	    //no death so haven't implemented yet.
 		this.entities.forEach(function(entity){
 			//console.log('draw an Entity');
 			entity.draw(fractionOfNextPhysicsUpdate);

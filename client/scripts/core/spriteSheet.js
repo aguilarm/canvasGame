@@ -233,9 +233,5 @@ function __drawSpriteInternal(spt,sheet,posX,posY,settings)
 	                                spt.w,
 	                                spt.h);
 	}
-	/*ctx.drawImage(sheet.img,
-				spt.x, spt.y, spt.w, spt.h,
-				posX + hlf.x, posY + hlf.y,
-				spt.w, spt.h);*/
 };
 var gSpriteSheets = {};
