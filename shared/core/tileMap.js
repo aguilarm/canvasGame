@@ -168,8 +168,8 @@ var TileMapLoaderClass = Class.extend({
             // This is a teleporter
             var posArray = lobj.properties.destination.split(",");
             var destPos = {
-              'x': (parseInt(posArray[0].replace(" ", ""))) * this.tileSize.x,
-              'y': (parseInt(posArray[1].replace(" ", ""))) * this.tileSize.y
+              'x': (parseInt(posArray[0].replace(" ", ""))),
+              'y': (parseInt(posArray[1].replace(" ", "")))
             };
 
             var ent = gGameEngine.spawnEntity("Teleporter", lobj.x, lobj.y, {
