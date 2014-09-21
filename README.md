@@ -7,11 +7,11 @@ Creating an html5 game using the canvas element and a ton of (vanilla) javascrip
 
 When I'm finished with this project, I hope to understand how to write the entire thing from scratch.  This is why I'm implementing it in parts; I'm going through every component and experimenting as I go to learn how each section interacts with all of the others.
 
-Also, GRITS is a robot fighting game that has a controllable robot which can pickup various objects like powerups and health from the gameworld and shoots other AI or player controlled robots.  My ultimate goal is to use this framework to build something more like BrowserQuest, a more Zelda-like RPG game, and the Udacity course was the best resource I've found since afaik BrowserQuest does not have an entire course built to understand how to put it together.
+Also, GRITS is a robot fighting game that has a controllable robot which can pickup various objects like powerups and health from the gameworld and shoots other AI or player controlled robots.  My ultimate goal is to use this framework to build something more like BrowserQuest, a more Zelda-like RPG game, and the Udacity course has been a fun way to do it.  The goal is more to really understand Javascript more than how a game works.
 
-First, I'm going to try to get the engine working on it's own and then add server interaction so I can have different players login.
+First, I'm going to try to get the engine working on it's own and then add server interaction so I can have different players login, or perhaps have a login system where you can save a character tied to an account with stats and items.
 
 ## Progress
 
-I have a working assetloading system, a physics engine using box2d, an input handling engine, and rendering engine.  As of last updating this section, all of those systems work and will draw a skeleton character onto the canvas with a physics body.  No animations or interactions yet.
+As of v0.1.0, the game is complete on the most basic level.  It could use a lot of optimization but all of the big parts are working together to allow a single player to walk around the map, bump into things, and even use a teleporter.
 
