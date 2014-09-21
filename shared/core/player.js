@@ -24,14 +24,15 @@ PlayerClass = EntityClass.extend({
 	isDead: false,
 	zIndex: 1,
 	init: function (inputx, inputy, settings) {
-		this.hsize = {x:35, y:50};
+		this.hsize = {x:30, y:48};
+		console.log(this.hsize);
 		this.parent(inputx, inputy, settings);
 		var entityDef = {
 			id: "player",
 			x: this.pos.x,
 			y: this.pos.y,
 			halfHeight: this.hsize.x / 2, //JJG: divide by 2 to let the player squeeze through narrow corridors
-			halfWidth: this.hsize.y / 2,  //MEA: not sure I'll need this, but leaving for now
+			halfWidth: this.hsize.y / 2,  //MEA: removed division, I want player to have full size collision
 			damping: 0,
 			angle: 0,
 			categories: ['player', settings.team == 0 ? 'team0' : 'team1'],

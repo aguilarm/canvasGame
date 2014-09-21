@@ -121,6 +121,12 @@ ClientPlayerClass = PlayerClass.extend({
         var dPX = gRenderEngine.getScreenPosition(intrPos).x;
         var dPY = gRenderEngine.getScreenPosition(intrPos).y;
         
+        //draw red box where player is for debug
+        //var ePX = dPX - (this.hsize.x/2);
+        //var ePY = dPY - (this.hsize.y/2);
+        //ctx.fillStyle ="#FF0000";
+        //ctx.fillRect(ePX, ePY, this.hsize.x, this.hsize.y);
+        
         this._drawPlayerAvatar(ctx, {player:this, locX:dPX, locY:dPY});
     
         

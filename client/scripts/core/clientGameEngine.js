@@ -94,7 +94,7 @@ ClientGameEngineClass = GameEngineClass.extend({
 			    }
 			}
 			if(gInputEngine.state('run')){
-			    move_dir.Multiply(this.gPlayer0.walkSpeed * 1.8);
+			    move_dir.Multiply(this.gPlayer0.walkSpeed * 2);
 			    //change the animation speed to match
 			    for(i = 0;i < 4;i++){
 			        this.gPlayer0._walkSpriteAnimList[i]._animIncPerFrame = 0.4;
