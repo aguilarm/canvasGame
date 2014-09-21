@@ -56,6 +56,14 @@ ClientGameEngineClass = GameEngineClass.extend({
 		
 		var inputEngine = gInputEngine;
 		
+		//Make sure the part of the map that is being drawn matches the viewport
+		if(gRenderEngine.canvas.width != this.gMap.viewRect.w) {
+		    this.gMap.viewRect.w = gRenderEngine.canvas.width;
+		}
+		if(gRenderEngine.canvas.height != this.gMap.viewRect.h) {
+		    this.gMap.viewRect.h = gRenderEngine.canvas.height;
+		} 
+		
 		if (!this.gPlayer0 || this.gPlayer0.isDead) {
 		    return;
 		}
