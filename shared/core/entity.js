@@ -65,7 +65,7 @@ EntityClass = Class.extend({
 		this.last.y = this.pos.y;
 		
 		//once we get 100 units from the teleporter, we can re-enter
-		if (this.lastCloseTeleportPos != null && disSq(this.pos, this.lastCloseTeleportPos) > (100*100)) {
+		if (this.lastCloseTeleportPos != null && distSq(this.pos, this.lastCloseTeleportPos) > (100*100)) {
 		    //we can teleport again
 		    this.lastCloseTeleportPos = null;
 		}

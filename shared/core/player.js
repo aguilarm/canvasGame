@@ -49,6 +49,7 @@ PlayerClass = EntityClass.extend({
 	},
 	//---------------------------------------------------
 	update: function(){
+	    this.parent();
 	    //TODO: this would normally handle respawns/deaths
 		this.physBody.SetActive(true);
 	},
