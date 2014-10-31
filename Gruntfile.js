@@ -7,7 +7,7 @@ module.exports = function(grunt) {
         concat: {
             client: {
                 src: 'client/scripts/core/*.js',
-                dest: 'client/scripts/client.js',
+                dest: 'client/scripts/client.js'
             },
             shared: {
                 src: [
@@ -27,20 +27,31 @@ module.exports = function(grunt) {
                     "shared/environment/spawner.js",
                     "shared/environment/teleporter.js",
                 ],
-                dest: 'shared/shared.js',
-            },
-            
+                dest: 'shared/shared.js'
+            }
         },
         
         uglify: {
             client: {
+                options: {
+                    compress: {
+                        drop_console: true
+                    },
+                    preserveComments: false,
+                },
                 src: 'client/scripts/client.js',
                 dest: 'client/scripts/client.min.js'
             },
-            shared: {
+            shared: {                
+                options: {
+                    compress: {
+                        drop_console: true
+                    },
+                    preserveComments: false,
+                },
                 src: 'shared/shared.js',
                 dest: 'shared/shared.min.js',
-            },
+            }
         },
         
         imagemin: {
