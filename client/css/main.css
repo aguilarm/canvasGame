@@ -41,6 +41,16 @@ body, html {
 }
 
 #welcomeScreen button:hover {
+    background-color:#64A42C;
+}
+#welcomeScreen button#startDebug {
+    height:40px;
+    width:60%;
+    font-size:25px;
+    background-color:#555;
+}
+
+#welcomeScreen button#startDebug:hover {
     background-color:#FF584C;
 }
 
