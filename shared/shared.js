@@ -1,3 +1,170 @@
+Array.prototype.erase = function (item) {
+	for (var i = this.length; i--; i) {
+		if (this[i] === item) this.splice(i, 1);
+	}
+
+	return this;
+};
+
+Function.prototype.bind = function (bind) {
+	var self = this;
+	return function () {
+		var args = Array.prototype.slice.call(arguments);
+		return self.apply(bind || null, args);
+	};
+};
+
+merge = function (original, extended) {
+	for (var key in extended) {
+		var ext = extended[key];
+		if (typeof (ext) != 'object' || ext instanceof Class) {
+			original[key] = ext;
+		} else {
+			if (!original[key] || typeof (original[key]) != 'object') {
+				original[key] = {};
+			}
+			merge(original[key], ext);
+		}
+	}
+	return original;
+};
+
+function copy(object) {
+	if (!object || typeof (object) != 'object' || object instanceof Class) {
+		return object;
+	} else if (object instanceof Array) {
+		var c = [];
+		for (var i = 0, l = object.length; i < l; i++) {
+			c[i] = copy(object[i]);
+		}
+		return c;
+	} else {
+		var c = {};
+		for (var i in object) {
+			c[i] = copy(object[i]);
+		}
+		return c;
+	}
+}
+
+function ksort(obj) {
+	if (!obj || typeof (obj) != 'object') {
+		return [];
+	}
+
+	var keys = [],
+		values = [];
+	for (var i in obj) {
+		keys.push(i);
+	}
+
+	keys.sort();
+	for (var i = 0; i < keys.length; i++) {
+		values.push(obj[keys[i]]);
+	}
+
+	return values;
+}
+
+// -----------------------------------------------------------------------------
+// Class object based on John Resigs code; inspired by base2 and Prototype
+// http://ejohn.org/blog/simple-javascript-inheritance/
+(function () {
+	var initializing = false,
+		fnTest = /xyz/.test(function () {
+			xyz;
+		}) ? /\bparent\b/ : /.*/;
+
+	this.Class = function () {};
+	var inject = function (prop) {
+		var proto = this.prototype;
+		var parent = {};
+		for (var name in prop) {
+			if (typeof (prop[name]) == "function" && typeof (proto[name]) == "function" && fnTest.test(prop[name])) {
+				parent[name] = proto[name]; // save original function
+				proto[name] = (function (name, fn) {
+					return function () {
+						var tmp = this.parent;
+						this.parent = parent[name];
+						var ret = fn.apply(this, arguments);
+						this.parent = tmp;
+						return ret;
+					};
+				})(name, prop[name]);
+			} else {
+				proto[name] = prop[name];
+			}
+		}
+	};
+
+	this.Class.extend = function (prop) {
+		var parent = this.prototype;
+
+		initializing = true;
+		var prototype = new this();
+		initializing = false;
+
+		for (var name in prop) {
+			if (typeof (prop[name]) == "function" && typeof (parent[name]) == "function" && fnTest.test(prop[name])) {
+				prototype[name] = (function (name, fn) {
+					return function () {
+						var tmp = this.parent;
+						this.parent = parent[name];
+						var ret = fn.apply(this, arguments);
+						this.parent = tmp;
+						return ret;
+					};
+				})(name, prop[name]);
+			} else {
+				prototype[name] = prop[name];
+			}
+		}
+
+		function Class() {
+			if (!initializing) {
+
+				// If this class has a staticInstantiate method, invoke it
+				// and check if we got something back. If not, the normal
+				// constructor (init) is called.
+				if (this.staticInstantiate) {
+					var obj = this.staticInstantiate.apply(this, arguments);
+					if (obj) {
+						return obj;
+					}
+				}
+
+				for (var p in this) {
+					if (typeof (this[p]) == 'object') {
+						this[p] = copy(this[p]); // deep copy!
+					}
+				}
+
+				if (this.init) {
+					this.init.apply(this, arguments);
+				}
+			}
+
+			return this;
+		}
+
+		Class.prototype = prototype;
+		Class.constructor = Class;
+		Class.extend = arguments.callee;
+		Class.inject = inject;
+
+		return Class;
+	};
+
+})();
+
+newGuid_short = function () {
+	var S4 = function () {
+		return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+	};
+	return (S4()).toString();
+};
+
+
 /*
 * Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
 *
@@ -10880,173 +11047,127 @@ ConstantsClass = Class.extend({
 });
 
 var Constants = new ConstantsClass();
-Array.prototype.erase = function (item) {
-	for (var i = this.length; i--; i) {
-		if (this[i] === item) this.splice(i, 1);
-	}
+/*Copyright 2012 Google Inc. All Rights Reserved.
 
-	return this;
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+#limitations under the License.*/
+
+FactoryClass = Class.extend({
+  nameClassMap: {},
+
+  init: function () {},
+
+  getClass: function (name) {
+    return this.nameClassMap[name];
+  },
+
+  createInstance: function () {
+    var name = arguments[0];
+    var ClassToCreate = this.getClass();
+    switch (arguments.length) {
+    case 1:
+      return new ClassToCreate();
+    case 2:
+      return new ClassToCreate(arugments[1]);
+    case 3:
+      return new ClassToCreate(arugments[1], arugments[2]);
+    case 4:
+      return new ClassToCreate(arugments[1], arugments[2], arugments[3]);
+    case 5:
+      return new ClassToCreate(arugments[1], arugments[2], arugments[3], arugments[4]);
+    case 6:
+      return new ClassToCreate(arugments[1], arugments[2], arugments[3], arugments[4], arugments[5]);
+    case 7:
+      return new ClassToCreate(arugments[1], arugments[2], arugments[3], arugments[4], arugments[5], arguments[6]);
+    case 8:
+      return new ClassToCreate(arugments[1], arugments[2], arugments[3], arugments[4], arugments[5], arguments[6], arguments[7]);
+    case 9:
+      return new ClassToCreate(arugments[1], arugments[2], arugments[3], arugments[4], arugments[5], arguments[6], arguments[7], arguments[8]);
+    case 10:
+      return new ClassToCreate(arugments[1], arugments[2], arugments[3], arugments[4], arugments[5], arguments[6], arguments[7], arguments[8], arguments[9]);
+    case 11:
+      return new ClassToCreate(arugments[1], arugments[2], arugments[3], arugments[4], arugments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10]);
+    default:
+      Logger.log("Creating instances with more than 10 arguments not supported");
+    }
+
+  },
+
+});
+
+var Factory = new FactoryClass();
+//exports.Class = FactoryClass;
+/*Copyright 2012 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+#limitations under the License.*/
+
+TimerClass = Class.extend({
+  target: 0,
+  base: 0,
+  last: 0,
+
+  init: function (seconds) {
+    this.base = GlobalTimer.time;
+    this.last = GlobalTimer.time;
+
+    this.target = seconds || 0;
+  },
+
+
+  set: function (seconds) {
+    this.target = seconds || 0;
+    this.base = GlobalTimer.time;
+  },
+
+
+  reset: function () {
+    this.base = GlobalTimer.time;
+  },
+
+
+  tick: function () {
+    var delta = GlobalTimer.time - this.last;
+    this.last = GlobalTimer.time;
+    return delta;
+  },
+
+
+  delta: function () {
+    return GlobalTimer.time - this.base - this.target;
+  }
+});
+
+GlobalTimer = {}
+GlobalTimer._last = 0;
+GlobalTimer.time = Date.now();
+GlobalTimer.timeScale = 1;
+GlobalTimer.maxStep = 0.05;
+
+GlobalTimer.step = function () {
+  var current = Date.now();
+  var delta = (current - GlobalTimer._last) / 1000;
+  GlobalTimer.time += Math.min(delta, GlobalTimer.maxStep) * GlobalTimer.timeScale;
+  GlobalTimer._last = current;
 };
-
-Function.prototype.bind = function (bind) {
-	var self = this;
-	return function () {
-		var args = Array.prototype.slice.call(arguments);
-		return self.apply(bind || null, args);
-	};
-};
-
-merge = function (original, extended) {
-	for (var key in extended) {
-		var ext = extended[key];
-		if (typeof (ext) != 'object' || ext instanceof Class) {
-			original[key] = ext;
-		} else {
-			if (!original[key] || typeof (original[key]) != 'object') {
-				original[key] = {};
-			}
-			merge(original[key], ext);
-		}
-	}
-	return original;
-};
-
-function copy(object) {
-	if (!object || typeof (object) != 'object' || object instanceof Class) {
-		return object;
-	} else if (object instanceof Array) {
-		var c = [];
-		for (var i = 0, l = object.length; i < l; i++) {
-			c[i] = copy(object[i]);
-		}
-		return c;
-	} else {
-		var c = {};
-		for (var i in object) {
-			c[i] = copy(object[i]);
-		}
-		return c;
-	}
-}
-
-function ksort(obj) {
-	if (!obj || typeof (obj) != 'object') {
-		return [];
-	}
-
-	var keys = [],
-		values = [];
-	for (var i in obj) {
-		keys.push(i);
-	}
-
-	keys.sort();
-	for (var i = 0; i < keys.length; i++) {
-		values.push(obj[keys[i]]);
-	}
-
-	return values;
-}
-
-// -----------------------------------------------------------------------------
-// Class object based on John Resigs code; inspired by base2 and Prototype
-// http://ejohn.org/blog/simple-javascript-inheritance/
-(function () {
-	var initializing = false,
-		fnTest = /xyz/.test(function () {
-			xyz;
-		}) ? /\bparent\b/ : /.*/;
-
-	this.Class = function () {};
-	var inject = function (prop) {
-		var proto = this.prototype;
-		var parent = {};
-		for (var name in prop) {
-			if (typeof (prop[name]) == "function" && typeof (proto[name]) == "function" && fnTest.test(prop[name])) {
-				parent[name] = proto[name]; // save original function
-				proto[name] = (function (name, fn) {
-					return function () {
-						var tmp = this.parent;
-						this.parent = parent[name];
-						var ret = fn.apply(this, arguments);
-						this.parent = tmp;
-						return ret;
-					};
-				})(name, prop[name]);
-			} else {
-				proto[name] = prop[name];
-			}
-		}
-	};
-
-	this.Class.extend = function (prop) {
-		var parent = this.prototype;
-
-		initializing = true;
-		var prototype = new this();
-		initializing = false;
-
-		for (var name in prop) {
-			if (typeof (prop[name]) == "function" && typeof (parent[name]) == "function" && fnTest.test(prop[name])) {
-				prototype[name] = (function (name, fn) {
-					return function () {
-						var tmp = this.parent;
-						this.parent = parent[name];
-						var ret = fn.apply(this, arguments);
-						this.parent = tmp;
-						return ret;
-					};
-				})(name, prop[name]);
-			} else {
-				prototype[name] = prop[name];
-			}
-		}
-
-		function Class() {
-			if (!initializing) {
-
-				// If this class has a staticInstantiate method, invoke it
-				// and check if we got something back. If not, the normal
-				// constructor (init) is called.
-				if (this.staticInstantiate) {
-					var obj = this.staticInstantiate.apply(this, arguments);
-					if (obj) {
-						return obj;
-					}
-				}
-
-				for (var p in this) {
-					if (typeof (this[p]) == 'object') {
-						this[p] = copy(this[p]); // deep copy!
-					}
-				}
-
-				if (this.init) {
-					this.init.apply(this, arguments);
-				}
-			}
-
-			return this;
-		}
-
-		Class.prototype = prototype;
-		Class.constructor = Class;
-		Class.extend = arguments.callee;
-		Class.inject = inject;
-
-		return Class;
-	};
-
-})();
-
-newGuid_short = function () {
-	var S4 = function () {
-		return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-	};
-	return (S4()).toString();
-};
-
-
 /*Copyright 2011 Google Inc. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -11199,65 +11320,6 @@ EntityClass = Class.extend({
 
 //Last used entity id, incremented every time we init an entity
 EntityClass._lastId = 0;
-/*Copyright 2012 Google Inc. All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-#limitations under the License.*/
-
-FactoryClass = Class.extend({
-  nameClassMap: {},
-
-  init: function () {},
-
-  getClass: function (name) {
-    return this.nameClassMap[name];
-  },
-
-  createInstance: function () {
-    var name = arguments[0];
-    var ClassToCreate = this.getClass();
-    switch (arguments.length) {
-    case 1:
-      return new ClassToCreate();
-    case 2:
-      return new ClassToCreate(arugments[1]);
-    case 3:
-      return new ClassToCreate(arugments[1], arugments[2]);
-    case 4:
-      return new ClassToCreate(arugments[1], arugments[2], arugments[3]);
-    case 5:
-      return new ClassToCreate(arugments[1], arugments[2], arugments[3], arugments[4]);
-    case 6:
-      return new ClassToCreate(arugments[1], arugments[2], arugments[3], arugments[4], arugments[5]);
-    case 7:
-      return new ClassToCreate(arugments[1], arugments[2], arugments[3], arugments[4], arugments[5], arguments[6]);
-    case 8:
-      return new ClassToCreate(arugments[1], arugments[2], arugments[3], arugments[4], arugments[5], arguments[6], arguments[7]);
-    case 9:
-      return new ClassToCreate(arugments[1], arugments[2], arugments[3], arugments[4], arugments[5], arguments[6], arguments[7], arguments[8]);
-    case 10:
-      return new ClassToCreate(arugments[1], arugments[2], arugments[3], arugments[4], arugments[5], arguments[6], arguments[7], arguments[8], arguments[9]);
-    case 11:
-      return new ClassToCreate(arugments[1], arugments[2], arugments[3], arugments[4], arugments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10]);
-    default:
-      Logger.log("Creating instances with more than 10 arguments not supported");
-    }
-
-  },
-
-});
-
-var Factory = new FactoryClass();
-//exports.Class = FactoryClass;
 /*Copyright 2011 Google Inc. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -11524,80 +11586,6 @@ GameEngineClass = Class.extend({
 });
 
 var gGameEngine = new GameEngineClass();
-//Set up globals
-//var parsedJSON = 0;
-//	jsonLoaded = 0;
-//	ghostmaster = 0;
-//var mainCTX = 0;
-//	mainCanvas = 0;
-//	sheet = 0;
-	
-//Load assets
-function preloadAssets () {
-	console.log("preloadAssets begin");
-	var assets = new Array();
-	assets.push("img/master.png");
-	
-	//sounds
-	//none yet
-	
-	loadAssets(assets, 
-		xhrGet("img/master.json", false, saveMaster)
-	);
-}
-
-preloadAssets();
-
-//Run when document is ready
-$(function(){
-	
-	//Setup the render engine which sizes the canvas and adds event listeners
-	gRenderEngine.setup();
-
-	//saveMaster is fired when the xhr loads, to prevent calling a draw without a loaded image
-	//Prooobably a better way to do this, but for now:
-	$(document).on('saveMaster', function () {
-		//setTimeout(function(){
-		drawSprite("skele_18.png",100,100);
-		console.log('drawing skele_01');
-		setTimeout(function(){
-			clearCanvas(gRenderEngine.context);
-			console.log('clearCanvas call');
-		}, 4000);
-		//},200);
-	});
-	
-	//Start up game engine
-	gGameEngine.setup();
-	console.log('setupGameEngine');
-	setInterval(function(){
-		gGameEngine.update();
-		console.log('updating gGameEngine...');
-	}, 300);
-});
-
-//Create a canvas with the id of canvasID and context of contextName
-/*This is now handled by the renderEngine
-function initCanvas() {
-	//Set up variables
-	var canvas = document.getElementById('mainCanvas');
-		ctx = canvas.getContext('2d');
-	//Create and style the canvas
-	
-	canvas.height = window.innerHeight;
-	canvas.width = window.innerWidth;
-	canvas.style.backgroundColor = "#00f";
-	setTimeout(function(){
-		canvas.style.backgroundColor = "#fff";
-	}, 300);
-	console.log("attempted to edit canvas, checking ctx next");
-}
-*/
-//Clear the entire specific canvas
-function clearCanvas(context){
-	context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-}
-
 /*Copyright 2011 Google Inc. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12308,68 +12296,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 #limitations under the License.*/
 
-TimerClass = Class.extend({
-  target: 0,
-  base: 0,
-  last: 0,
-
-  init: function (seconds) {
-    this.base = GlobalTimer.time;
-    this.last = GlobalTimer.time;
-
-    this.target = seconds || 0;
-  },
-
-
-  set: function (seconds) {
-    this.target = seconds || 0;
-    this.base = GlobalTimer.time;
-  },
-
-
-  reset: function () {
-    this.base = GlobalTimer.time;
-  },
-
-
-  tick: function () {
-    var delta = GlobalTimer.time - this.last;
-    this.last = GlobalTimer.time;
-    return delta;
-  },
-
-
-  delta: function () {
-    return GlobalTimer.time - this.base - this.target;
-  }
-});
-
-GlobalTimer = {}
-GlobalTimer._last = 0;
-GlobalTimer.time = Date.now();
-GlobalTimer.timeScale = 1;
-GlobalTimer.maxStep = 0.05;
-
-GlobalTimer.step = function () {
-  var current = Date.now();
-  var delta = (current - GlobalTimer._last) / 1000;
-  GlobalTimer.time += Math.min(delta, GlobalTimer.maxStep) * GlobalTimer.timeScale;
-  GlobalTimer._last = current;
-};
-/*Copyright 2012 Google Inc. All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-#limitations under the License.*/
-
 distSq = function(p1,p2) {
   return (p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y);
 }
@@ -12377,130 +12303,6 @@ distSq = function(p1,p2) {
 alphaBeta = function(x1,x2,alpha) {
   return x1*alpha + x2*(1.0 - alpha);
 }
-WeaponInstanceClass = EntityClass.extend({
-	damageMultiplier:1.0,
-	
-	init: function(x,y,settings){
-		this.parent(x,y,settings);
-	}
-});
-
-//gGameEngine.factory['WeaponInstance'] = WeaponInstanceClass;
-/*Copyright 2012 Google Inc. All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-#limitations under the License.*/
-
-SpawnPointClass = EntityClass.extend({
-  onInit: function () {
-    //Logger.log('CREATING SPAWN POINT FOR TEAM ' + this.team);
-  },
-  kill: function () {},
-  update: function () {},
-});
-
-Factory.nameClassMap['SpawnPoint'] = SpawnPointClass;
-
-/*Copyright 2012 Google Inc. All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-#limitations under the License.*/
-
-SpawnerClass = EntityClass.extend({
-  timeUntilSpawn:0,
-  lastSpawned:null,
-  spawnItem:null,
-  nextSpawnTime:0,
-  onInit: function (spawnItem) {
-    this.spawnItem = spawnItem;
-  },
-  kill: function () {},
-  update: function () {
-	//if(!IS_SERVER)	return; //TODO: update should be handled by the server
-    if (this.lastSpawned == null)
-	{
-		if (this.nextSpawnTime>gGameEngine.getTime()) 
-			return;
-      
-		//Create entity on spawner
-		var startPoint = new Vec2(this.pos.x, this.pos.y);
-		var ent_name = this.name + "_" + this.spawnItem;
-		if(gGameEngine.getEntityByName(ent_name)!=null)
-			return;
-		var ent = gGameEngine.spawnEntity(this.spawnItem, this.pos.x, this.pos.y, {
-              name: "!" + ent_name
-            });
-		this.lastSpawned = ent;
-	 }
-	 else
-	 {
-		if(this.lastSpawned._killed == true )
-		{
-			this.nextSpawnTime = gGameEngine.getTime() + 20;
-			this.lastSpawned = null;
-		}
-	 }
-    
-  },
-});
-
-Factory.nameClassMap['Spawner'] = SpawnerClass;
-/*Copyright 2012 Google Inc. All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-#limitations under the License.*/
-
-TeleporterClass = EntityClass.extend({
-  onInit: function (physicsDef, destination) {
-    console.log('CREATING TELEPORTER');
-    this.physicsDef = physicsDef;
-    this.destination = destination;
-    this.physBody = gPhysicsEngine.addBody(physicsDef);
-  },
-  kill: function () {},
-  update: function () {},
-
-  onTouch: function (otherBody, point, impulse) {
-    var otherEnt = otherBody.GetUserData().ent;
-    console.log('TELEPORTER.ONTOUCH');
-    console.log(otherEnt);
-    console.log(this.destination);
-    if (otherEnt.lastCloseTeleportPos == null) {
-      otherEnt.centerAt(this.destination);
-      otherEnt.lastCloseTeleportPos = {x:this.destination.x,y:this.destination.y};
-    }
-    return true;
-  },
-});
-
-Factory.nameClassMap['Teleporter'] = TeleporterClass;
 var mapOutside = { "backgroundcolor":"#322125",
  "height":100,
  "layers":[
@@ -15214,50 +15016,118 @@ var mapOutside = { "backgroundcolor":"#322125",
  "version":1,
  "width":150
 }
-SimpleProjectileClass = WeaponInstanceClass.extend({
-	//init variables
-	physBody: null,
-	speed: 800,
-	lifetime: 0,
-	
-	init: function(x, y, settings){
-		this.parent(x,y,settings);
-		
-		var startPos = settings.pos;
-		
-		this.lifetime = 2;
-		
-		var entityDef = {
-			id: "SimpleProjectile",
-			x: startPos.x,
-			y: startPos.y,
-			halfHeight: 5 * 0.5,
-			halfWidth: 5 * 0.5,
-			damping: 0
-		};
-		
-		this.physBody = gPhysicsEngine.addBody(entityDef);
-		
-		this.physBody.SetLinearVelocity(new Vec2(settings.dir.x * this.speed,
-												settings.dir.y * this.speed))
-	},
-	//-------------------------------------
-	update: function () {
-		this.lifetime -= 0.05;
-		if(this.lifetime <= 0) {
-			this.kill();
-			return;
-		}
-		
-		this.physBody.SetLinearVelocity(new Vec2(this.dir.x * this.speed,
-												this.dir.y * this.speed));
-		
-		if(this.physBody != null) {
-			this.pos = this.physBody.GetPosition();
-		}
-		
-		this.parent();
-	}
+/*Copyright 2012 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+#limitations under the License.*/
+
+SpawnPointClass = EntityClass.extend({
+  onInit: function () {
+    //Logger.log('CREATING SPAWN POINT FOR TEAM ' + this.team);
+  },
+  kill: function () {},
+  update: function () {},
 });
 
-gGameEngine.factory['SimpleProjectile'] = SimpleProjectileClass;
+Factory.nameClassMap['SpawnPoint'] = SpawnPointClass;
+
+/*Copyright 2012 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+#limitations under the License.*/
+
+SpawnerClass = EntityClass.extend({
+  timeUntilSpawn:0,
+  lastSpawned:null,
+  spawnItem:null,
+  nextSpawnTime:0,
+  onInit: function (spawnItem) {
+    this.spawnItem = spawnItem;
+  },
+  kill: function () {},
+  update: function () {
+	//if(!IS_SERVER)	return; //TODO: update should be handled by the server
+    if (this.lastSpawned == null)
+	{
+		if (this.nextSpawnTime>gGameEngine.getTime()) 
+			return;
+      
+		//Create entity on spawner
+		var startPoint = new Vec2(this.pos.x, this.pos.y);
+		var ent_name = this.name + "_" + this.spawnItem;
+		if(gGameEngine.getEntityByName(ent_name)!=null)
+			return;
+		var ent = gGameEngine.spawnEntity(this.spawnItem, this.pos.x, this.pos.y, {
+              name: "!" + ent_name
+            });
+		this.lastSpawned = ent;
+	 }
+	 else
+	 {
+		if(this.lastSpawned._killed == true )
+		{
+			this.nextSpawnTime = gGameEngine.getTime() + 20;
+			this.lastSpawned = null;
+		}
+	 }
+    
+  },
+});
+
+Factory.nameClassMap['Spawner'] = SpawnerClass;
+/*Copyright 2012 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+#limitations under the License.*/
+
+TeleporterClass = EntityClass.extend({
+  onInit: function (physicsDef, destination) {
+    console.log('CREATING TELEPORTER');
+    this.physicsDef = physicsDef;
+    this.destination = destination;
+    this.physBody = gPhysicsEngine.addBody(physicsDef);
+  },
+  kill: function () {},
+  update: function () {},
+
+  onTouch: function (otherBody, point, impulse) {
+    var otherEnt = otherBody.GetUserData().ent;
+    console.log('TELEPORTER.ONTOUCH');
+    console.log(otherEnt);
+    console.log(this.destination);
+    if (otherEnt.lastCloseTeleportPos == null) {
+      otherEnt.centerAt(this.destination);
+      otherEnt.lastCloseTeleportPos = {x:this.destination.x,y:this.destination.y};
+    }
+    return true;
+  },
+});
+
+Factory.nameClassMap['Teleporter'] = TeleporterClass;

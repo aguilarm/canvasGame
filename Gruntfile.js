@@ -11,10 +11,21 @@ module.exports = function(grunt) {
             },
             shared: {
                 src: [
-                    'shared/core/*.js',
-                    'shared/environment/*.js',
-                    'shared/maps/*.js',
-                    'shared/weapons/*.js',
+                    "shared/core/core.js",
+                    "shared/core/box2D.js",
+                    "shared/core/constants.js",
+                    "shared/core/factory.js",
+                    "shared/core/timer.js",
+                    "shared/core/entity.js",
+                    "shared/core/gameEngine.js",
+                    "shared/core/physicsEngine.js",
+                    "shared/core/player.js",
+                    "shared/core/tileMap.js",
+                    "shared/core/util.js",
+                    "shared/maps/outside.js",
+                    "shared/environment/spawnPoint.js",
+                    "shared/environment/spawner.js",
+                    "shared/environment/teleporter.js",
                 ],
                 dest: 'shared/shared.js',
             },
@@ -31,13 +42,25 @@ module.exports = function(grunt) {
                 dest: 'shared/shared.min.js',
             },
         },
+        
+        imagemin: {
+            dynamic: {
+                files: [{
+                    expand: true,
+                    cwd: 'client/img/',
+                    src: ['**/*.{png,jpg,gif}'],
+                    dest: 'client/img/'
+                }]
+            }
+        }
     });
 
     // 3. Where we tell Grunt we plan to use this plug-in.
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-imagemin');
     
     // 4. Where we tell Grunt what to do when we type "grunt" into the terminal.
-    grunt.registerTask('default', ['concat', 'uglify']);
+    grunt.registerTask('default', ['concat', 'uglify', 'imagemin']);
 
 };
