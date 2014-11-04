@@ -54,7 +54,6 @@ ClientGameEngineClass = GameEngineClass.extend({
 		this.parent();
 		//console.log('gGameEngineUpdate, Client');
 		
-		var inputEngine = gInputEngine;
 		
 		//Make sure the part of the map that is being drawn matches the viewport
 		if(gRenderEngine.canvas.width != this.gMap.viewRect.w) {
@@ -156,7 +155,6 @@ ClientGameEngineClass = GameEngineClass.extend({
 	    
 	    //no death so haven't implemented yet.
 		this.entities.forEach(function(entity){
-			//console.log('draw an Entity');
 			entity.draw(fractionOfNextPhysicsUpdate);
 		});
 		

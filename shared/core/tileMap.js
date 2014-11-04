@@ -35,7 +35,6 @@ var TileMapLoaderClass = Class.extend({
   imgLoadCount:0,
   initialize: function () {},
   load: function (map) {
-      console.log('loadmap');
     this.currMapData = map;
     this.numXTiles = map.width;
     this.numYTiles = map.height;
@@ -299,7 +298,7 @@ var TileMapLoaderClass = Class.extend({
     }
 
     //CLM used to help debugging
-    var drawCollisionShapes = false;
+    var drawCollisionShapes = true;
     if (drawCollisionShapes) {
       //load our object and collision layers
       for (var layerIdx = 0; layerIdx < this.currMapData.layers.length; layerIdx++) {
@@ -396,7 +395,7 @@ var TileMapLoaderClass = Class.extend({
 			// Nine arguments: the element, source (x,y) coordinates, source width and 
 			// height (for cropping), destination (x,y) coordinates, and destination width 
 			// and height (resize).
-	//		ctx.fillRect(worldX,worldY,this.tileSize.x, this.tileSize.y);
+			//ctx.fillRect(worldX,worldY,this.tileSize.x, this.tileSize.y);
 			
 			ctx.drawImage(tPKT.img,
 							tPKT.px, tPKT.py, 

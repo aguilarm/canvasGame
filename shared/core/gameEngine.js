@@ -68,15 +68,12 @@ GameEngineClass = Class.extend({
 		                {
 		                    nm[i] = u[i].ent.name || '';
 		                    if(u[i].ent.walkSpeed != null){
-		                        console.log('Player colliding!');
 		                        typ[i] = 0; }//it's a player
 		                    else{
-		                        console.log('Object colliding!');
 		                        typ[i] = 1;} //either a projectile or enviro object
 		                }
 		                else
 		                {
-		                    console.log('Wall colliding!');
 		                    typ[i] = 2; //it's a wall
 		                }
 		            }
@@ -90,8 +87,6 @@ GameEngineClass = Class.extend({
 			        if(typ[1] == 0)
 				        if(typ[0] == 0 || typ[0] == 2)
 					        return;
-			    console.log('Nor a player and a wall!');
-					        
 					        
 			if(IS_SERVER)		
 		    {
