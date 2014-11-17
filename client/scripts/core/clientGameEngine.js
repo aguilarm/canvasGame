@@ -119,8 +119,8 @@ ClientGameEngineClass = GameEngineClass.extend({
 		var dPY = this.gPlayer0.pos.y;
 		
 		//Facing direction from mouse or keyboard, defaults to last value
-		var faceAngleRadians = this.gPlayer0.faceAngleRadians;
-		pInput.faceAngle0to7 = (Math.round(faceAngleRadians/(2*Math.PI)* 8) + 8) % 8;
+		//var faceAngleRadians = this.gPlayer0.faceAngleRadians;
+		//pInput.faceAngle0to7 = (Math.round(faceAngleRadians/(2*Math.PI)* 8) + 8) % 8;
 		
 		//Record and sent out inputs
 		this.gPlayer0.pInput = pInput;
@@ -213,7 +213,6 @@ ClientGameEngineClass = GameEngineClass.extend({
                         
                         sheet.defSprite(key, val.frame.x, val.frame.y, val.frame.w, val.frame.h, cx, cy);
                     }
-                    console.log('preloadComplete should = true');
                     gGameEngine.preloadComplete = true;
             });
         });

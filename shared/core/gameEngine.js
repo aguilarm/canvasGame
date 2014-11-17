@@ -249,9 +249,9 @@ GameEngineClass = Class.extend({
 		//TODO only doing one player, should be doing a bunch
 	    var plyr = this.gPlayer0;
 	    if (plyr) {
-	    var pPos = plyr.physBody.GetPosition();
-	    plyr.pos.x = pPos.x;
-	    plyr.pos.y = pPos.y;
+	    	var pPos = plyr.physBody.GetPosition();
+	    	plyr.pos.x = pPos.x;
+	    	plyr.pos.y = pPos.y;
 	    }
 	},
 	
