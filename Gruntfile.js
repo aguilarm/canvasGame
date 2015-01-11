@@ -6,7 +6,13 @@ module.exports = function(grunt) {
 
         concat: {
             client: {
-                src: 'client/scripts/core/*.js',
+                src: [
+                    'client/scripts/core/inputEngine.js',
+                    'client/scripts/core/renderEngine.js',
+                    'client/scripts/core/clientPlayer.js',
+                    'client/scripts/core/clientGameEngine.js',
+                    'client/scripts/core/spriteSheet.js'
+                ],
                 dest: 'client/scripts/client.js'
             },
             shared: {
@@ -63,15 +69,31 @@ module.exports = function(grunt) {
                     dest: 'client/img/'
                 }]
             }
-        }
+        },
+        
+        watch: {
+            dev: {
+                files: [
+                    'client/scripts/core/*.js',
+                    'client/scripts/pregame/*.js',
+                    'shared/core/*.js', 
+                    'shared/core/environment/*.js',
+                    'shared/core/maps/*.js',
+                    'shared/core/weapons/*.js'
+                    ],
+                tasks: ['concat', 'uglify']
+            }
+        },
     });
 
     // 3. Where we tell Grunt we plan to use this plug-in.
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-imagemin');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     
     // 4. Where we tell Grunt what to do when we type "grunt" into the terminal.
     grunt.registerTask('default', ['concat', 'uglify', 'imagemin']);
-
+    grunt.registerTask('dev', ['concat', 'uglify', 'imagemin', 'watch']);
+    
 };

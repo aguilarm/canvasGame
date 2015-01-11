@@ -15,217 +15,312 @@ See the License for the specific language governing permissions and
 //Modified by Mika Aguilar
 //----------------------------------
 
-ClientGameEngineClass = GameEngineClass.extend({
-	gSocket: null,
-	newMapPos: {x:0, y:0},
+var gInputEngine = {
+    bindings:{},
+    actions: {},
+    presses: {},
+    locks: {},
+    delayedKeyup: [],
+	    
+    mouse: {
+	    x: 0,
+	    y: 0
+    },
 	
-	init:function() {
-		this.parent();
-	},
-	//---------------------------------
-	setup: function() {
-		this.parent();
-		
-		gInputEngine.bind(gInputEngine.KEY.W, 'move-up');
-        gInputEngine.bind(gInputEngine.KEY.S, 'move-down');
-        gInputEngine.bind(gInputEngine.KEY.A, 'move-left');
-        gInputEngine.bind(gInputEngine.KEY.D, 'move-right');
-        
-        gInputEngine.bind(gInputEngine.KEY.SHIFT, 'run');
-        
-        //TODO MEA change these to 'attack_up' etc and make these stop the character to shoot/swing weapon
-        //gInputEngine.bind(gInputEngine.KEY.UP_ARROW, 'fire-up');
-        //gInputEngine.bind(gInputEngine.KEY.DOWN_ARROW, 'fire-down');
-        //gInputEngine.bind(gInputEngine.KEY.LEFT_ARROW, 'fire-left');
-        //gInputEngine.bind(gInputEngine.KEY.RIGHT_ARROW, 'fire-right');
-
-        //firing
-        //gInputEngine.bind(gInputEngine.KEY.MOUSE1, 'fire0-mouse');
-        //gInputEngine.bind(gInputEngine.KEY.SHIFT, 'fire1-instead-of-0');
-        //gInputEngine.bind(gInputEngine.KEY.MOUSE2, 'fire1-mouse');
-        //gInputEngine.bind(gInputEngine.KEY.SPACE, 'fire2');
-		//spawn the player when game starts
-		//TODO this is probably not the best place to put this or even a great way to do it, but for now...
-		
-
-	},
-	//----------------------------------
-	update: function() {
-		this.parent();
-		//console.log('gGameEngineUpdate, Client');
-		
-		var inputEngine = gInputEngine;
-		
-		//Make sure the part of the map that is being drawn matches the viewport
-		if(gRenderEngine.canvas.width != this.gMap.viewRect.w) {
-		    this.gMap.viewRect.w = gRenderEngine.canvas.width;
-		}
-		if(gRenderEngine.canvas.height != this.gMap.viewRect.h) {
-		    this.gMap.viewRect.h = gRenderEngine.canvas.height;
-		} 
-		
-		if (!this.gPlayer0 || this.gPlayer0.isDead) {
-		    return;
-		}
-		
-		var pInput = {
-			x: 0,
-			y: 0,
-			faceAngle0to7: 0, //Limit facing to 8 directions
-			walking: false,
-		};
-		var move_dir = new Vec2(0, 0);
-		if (gInputEngine.state('move-up'))
-			move_dir.y -= 1;
-		if (gInputEngine.state('move-down'))
-			move_dir.y += 1;
-		if (gInputEngine.state('move-left'))
-			move_dir.x -= 1;
-		if (gInputEngine.state('move-right'))
-			move_dir.x += 1;
-		//check if a move key has been pressed, if so make walk
-		if (move_dir.LengthSquared()) {
-			pInput.walking = true;
-			//Set move_dir to a unit vector in the same direction
-			//it's currently pointing
-			move_dir.Normalize();
-			//Then multiply move_dir by players set walkSpeed, this
-			//allows us to modify walkSpeed outside of this function
-			//MEA Added a check to see if we should be running or not
-			if(!gInputEngine.state('run')){
-			    move_dir.Multiply(this.gPlayer0.walkSpeed);
-			    //check animation speed, reset if needed
-			    if (this.gPlayer0._walkSpriteAnimList[0]._animIncPerFrame != 0.2){
-    			    for(i = 0;i < 4;i++){
-			            this.gPlayer0._walkSpriteAnimList[i]._animIncPerFrame = 0.2;
-			        }
-			    }
-			}
-			if(gInputEngine.state('run')){
-			    move_dir.Multiply(this.gPlayer0.walkSpeed * 2);
-			    //change the animation speed to match
-			    for(i = 0;i < 4;i++){
-			        this.gPlayer0._walkSpriteAnimList[i]._animIncPerFrame = 0.4;
-			    }
-			}
-			pInput.x += move_dir.x;
-			pInput.y += move_dir.y;
-		} else {
-			pInput.walking = false;
-			pInput.x = 0;
-			pInput.y = 0;
-		}
-		
-		var dPX = this.gPlayer0.pos.x;
-		var dPY = this.gPlayer0.pos.y;
-		
-		//Facing direction from mouse or keyboard, defaults to last value
-		var faceAngleRadians = this.gPlayer0.faceAngleRadians;
-		pInput.faceAngle0to7 = (Math.round(faceAngleRadians/(2*Math.PI)* 8) + 8) % 8;
-		
-		//Record and sent out inputs
-		this.gPlayer0.pInput = pInput;
-	    this.gPlayer0.sendUpdates();
-	    
-	    this.gPlayer0.applyInputs();
-		
-		//recenter our map bounds based upon the player's centered position
-		this.newMapPos.x = this.gPlayer0.pos.x - (this.gMap.viewRect.w * 0.5);
-		this.newMapPos.y = this.gPlayer0.pos.y - (this.gMap.viewRect.h * 0.5);
-	},//end of update
-	//-----------------------------------------
-	run: function() {
-		this.parent();
-		var fractionOfNextPhysicsUpdate = this.timeSincePhysicsUpdate / Constants.PHYSICS_LOOP_HZ;
-			
-		this.update();
-		
-		this.draw(fractionOfNextPhysicsUpdate);
-		gInputEngine.clearPressed();
-	},
-	//-----------------------------------------
-	//This function draws the entire frame to the canvas each update.
-	draw: function (fractionOfNextPhysicsUpdate) {
-	    
-	    // Alpha-beta filter on camera
-        this.gMap.viewRect.x = parseInt(alphaBeta(this.gMap.viewRect.x, this.newMapPos.x, 0.9));
-        this.gMap.viewRect.y = parseInt(alphaBeta(this.gMap.viewRect.y, this.newMapPos.y, 0.9));
+	screenMouse: {
+    	x: 0,
+    	y: 0
+    },
+	
+    //MEA - these are placeholders
+    onMouseDownEvent: function (event) {
+        return;
+    },
     
-	    // Draw map.
-	    this.gMap.draw(null);
+    onMouseUpEvent: function (event) {
+        return;
+    },
+    
+    onMouseMoveEvent: function (event) {
+	    this.mouse.x = event.clientX;
+	    this.mouse.y = event.clientY;
+	},
+    	
+    onKeyDownEvent: function (keyCode, event) {
+		var code = keyCode,
+		    action = this.bindings[code];
+		    
+    	if(action) {
+	    	this.actions[action] = true;
+		    if (event && event.cancelable)
+			    event.preventDefault();
+    	    if (!this.locks[action]) {
+	            this.presses[action] = true;
+	            this.locks[action] = true;
+            }
+        }
+    },
 	    
-	    //no death so haven't implemented yet.
-		this.entities.forEach(function(entity){
-			//console.log('draw an Entity');
-			entity.draw(fractionOfNextPhysicsUpdate);
-		});
+    onKeyUpEvent: function (keyCode, event) {
+		var code = keyCode,
+    	    action = this.bindings[code];
+	    
+	    if(action) {
+		    if (event && event.cancelable)
+    	        event.preventDefault();
+	    	this.delayedKeyup.push(action);
+		}
+    },
+	    
+    bind: function (key, action) {
+	    this.bindings[key] = action;
+    },
+	    
+    state: function (action) {
+	    return this.actions[action];
+    },
+  	    
+    clearState: function (action) {
+	    this.actions[action] = false;
+    },
+	       
+    pressed: function (action) {
+        return this.presses[action];
+    },
+	    
+    clearPressed: function () {
+        var action;
+        for (var i = 0; i < this.delayedKeyup.length; i++) {
+            action = this.delayedKeyup[i];
+            this.actions[action] = false;
+            this.locks[action] = false;
+        }
+        this.delayedKeyup = [];
+        this.presses = {};
+    },
+	    
+    clearAllState: function () {
+        this.actions = {};
+        this.locks = {};
+        this.delayedKeyup = [];
+        this.presses = {};
+    },
+
+};
+
+var KEY = {
+  'MOUSE1': -1,
+  'MOUSE2': -3,
+  'MWHEEL_UP': -4,
+  'MWHEEL_DOWN': -5,
+
+  'BACKSPACE': 8,
+  'TAB': 9,
+  'ENTER': 13,
+  'PAUSE': 19,
+  'CAPS': 20,
+  'ESC': 27,
+  'SPACE': 32,
+  'PAGE_UP': 33,
+  'PAGE_DOWN': 34,
+  'END': 35,
+  'HOME': 36,
+  'LEFT_ARROW': 37,
+  'UP_ARROW': 38,
+  'RIGHT_ARROW': 39,
+  'DOWN_ARROW': 40,
+  'INSERT': 45,
+  'DELETE': 46,
+  '0': 48,
+  '1': 49,
+  '2': 50,
+  '3': 51,
+  '4': 52,
+  '5': 53,
+  '6': 54,
+  '7': 55,
+  '8': 56,
+  '9': 57,
+  'A': 65,
+  'B': 66,
+  'C': 67,
+  'D': 68,
+  'E': 69,
+  'F': 70,
+  'G': 71,
+  'H': 72,
+  'I': 73,
+  'J': 74,
+  'K': 75,
+  'L': 76,
+  'M': 77,
+  'N': 78,
+  'O': 79,
+  'P': 80,
+  'Q': 81,
+  'R': 82,
+  'S': 83,
+  'T': 84,
+  'U': 85,
+  'V': 86,
+  'W': 87,
+  'X': 88,
+  'Y': 89,
+  'Z': 90,
+  'NUMPAD_0': 96,
+  'NUMPAD_1': 97,
+  'NUMPAD_2': 98,
+  'NUMPAD_3': 99,
+  'NUMPAD_4': 100,
+  'NUMPAD_5': 101,
+  'NUMPAD_6': 102,
+  'NUMPAD_7': 103,
+  'NUMPAD_8': 104,
+  'NUMPAD_9': 105,
+  'MULTIPLY': 106,
+  'ADD': 107,
+  'SUBSTRACT': 109,
+  'DECIMAL': 110,
+  'DIVIDE': 111,
+  'F1': 112,
+  'F2': 113,
+  'F3': 114,
+  'F4': 115,
+  'F5': 116,
+  'F6': 117,
+  'F7': 118,
+  'F8': 119,
+  'F9': 120,
+  'F10': 121,
+  'F11': 122,
+  'F12': 123,
+  'SHIFT': 16,
+  'CTRL': 17,
+  'ALT': 18,
+  'PLUS': 187,
+  'COMMA': 188,
+  'MINUS': 189,
+  'PERIOD': 190
+};
+
+gInputEngine.KEY = KEY;
+/*Copyright 2011 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+#limitations under the License.*/
+//----------------------------------
+//Modified by Mika Aguilar
+//----------------------------------
+
+//-----------------------------------
+//The render engine handles the canvas properties so other classes can use them,
+//and adds event listeners to the canvas and sends them to the inputEngine
+
+var gRenderEngine = {
+	canvas: null,
+	context: null,
+	lastMouse: {
+		x: 0,
+		y: 0
+	},
+	lastMouseCanvas: {
+		x: 0,
+		y: 0,
+	},
+
+	setup: function () {
+		console.log('RENDERENGINE.SETUP()');
+		this.canvas = document.getElementById('mainCanvas');
+		this.context = this.canvas.getContext('2d');
+		this.canvas.width = window.innerWidth;
+		this.canvas.height = window.innerHeight;
+	
+		var addEL = window.addEventListener;
+	
+		addEL('keydown', this.keydown, false);
+		addEL('keyup', this.keyup, false);
 		
-		//Bucket entities by zIndex
-		/*var fudgeVariance = 128;
-		var zIndex_array = [];
-		var entities_bucketed_by_zIndex = {}
-		this.entities.forEach(function(entity){
-			if(zIndex_array.indexOf(entity.zIndex) === -1)
-			{
-				zIndex_array.push(entity.zIndex);
-				entities_bucketed_by_zIndex[entity.zIndex] = [];
-			}
-			entities_bucketed_by_zIndex[entity
-		zIndex_array.sort(function(a,b){return a-b;}});
-		zIndex_array.forEach(function(zIndex){
-			entities_bucketed_by_zIndex[zIndex].forEach(function(entity){
-				entity.draw(fractionOfNextPhysicsUpdate);
-			});
-		});*/
+		addEL('mousedown', this.mousedown, false);
+		addEL('mouseup', this.mouseup, false);
+		addEL('mousemove', this.mousemove, false);
 	},
 	
-	//------------------------------------------------
-	preloadComplete: false,
-	preloadAssets: function ()
-	{
-        //go load images first
-        var assets = new Array();
-        assets.push("img/master.png");
-        
-        var map = mapOutside;
-        for (var i = 0; i < map.tilesets.length; i++) {
-            assets.push("img/" + map.tilesets[i].image.replace(/^.*[\\\/]/, ''));
-        }
-        //TODO sounds
-        loadAssets(assets, function() 
-        {
-            xhrGet("img/master.json", false, 
-                function(data){
-                    var obj = JSON.parse(data.response);
-                    var sheet = new SpriteSheetClass();
-                    gSpriteSheets['master'] = sheet;
-                    sheet.load("img/master.png");
-                    
-                    for (var key in obj.frames)
-                    {
-                        var val = obj.frames[key];
-                        var cx=-val.frame.w * 0.5;
-                        var cy=-val.frame.h * 0.5;
-                        
-                        if(val.trimmed)
-                        {
-                            cx = val.spriteSourceSize.x - (val.sourceSize.w * 0.5);
-                            cy = val.spriteSourceSize.y - (val.sourceSize.h * 0.5);
-                        }
-                        
-                        sheet.defSprite(key, val.frame.x, val.frame.y, val.frame.w, val.frame.h, cx, cy);
-                    }
-                    console.log('preloadComplete should = true');
-                    gGameEngine.preloadComplete = true;
-            });
-        });
-        
-        //google says effects!@ here in comments,
-        //but no code is here. no idea why
-    }
-});
+	keydown: function (event) {
+		if (event.target.type == 'text')
+			return;
+		gInputEngine.onKeyDownEvent(event.keyCode, event);
+	},
+	
+	keyup: function (event) {
+		if (event.target.type == 'text')
+			return;
+		gInputEngine.onKeyUpEvent(event.keyCode, event);
+	},
+	
+	 mousedown: function (event) {
+   		gInputEngine.onMouseDownEvent(event.button, gRenderEngine.lastMouse.x, gRenderEngine.lastMouse.y, event);
+	},
 
-var gGameEngine = new ClientGameEngineClass();
+	mouseup: function (event) {
+    	gInputEngine.onMouseUpEvent(event.button, gRenderEngine.lastMouse.x, gRenderEngine.lastMouse.y, event);
+	},
+  
+	mousemove: function (event) {
+   		var el = this.canvas,
+    		pos = {
+   	  			left: 0,
+   				top: 0
+    		},
+   			tx = event.pageX,
+    		ty = event.pageY;
+    	
+   			while (el != null) {
+   				pos.left += el.offsetLeft;
+   				pos.top += el.offsetTop;
+     			el = el.offsetParent;
+   			}
+			
+    		gRenderEngine.lastMouse.x = tx;
+   			gRenderEngine.lastMouse.y = ty;
+   		
+   			gInputEngine.onMouseMoveEvent(gRenderEngine.lastMouse.x,gRenderEngine.lastMouse.y);
+
+   			gRenderEngine.lastMouseCanvas.x = gRenderEngine.lastMouse.x;
+   			gRenderEngine.lastMouseCanvas.y = gRenderEngine.lastMouse.y - gRenderEngine.canvas.offsetTop;
+	},
+  	
+   	getCanvasPosition: function (screenPosition) {
+       	return {
+           	x: screenPosition.x - this.canvas.offsetLeft,
+           	y: screenPosition.y - this.canvas.offsetTop
+           	};
+   	},
+
+	getScreenPosition: function(worldPosition) {
+       	return {
+           	x: -(gGameEngine.gMap.viewRect.x) + worldPosition.x,
+           	y: -(gGameEngine.gMap.viewRect.y) + worldPosition.y
+       	}
+   	},
+    	
+   	getWorldPosition: function (screenPosition) {
+       	var gMap = gGameEngine.gMap;
+       	
+       	return {
+           	x: screenPosition.x + gMap.viewRect.x,
+           	y: screenPosition.y + gMap.viewRect.y
+       	};
+   	}
+};
 /*Copyright 2011 Google Inc. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -402,329 +497,214 @@ See the License for the specific language governing permissions and
 //Modified by Mika Aguilar
 //----------------------------------
 
-InputEngineClass = Class.extend({
-	// Dictionary mapping ASCII key codes to string values describing intended actions
-	bindings:{},
-	//Dictionary of actions that could be taken and a boolean indicating whether it's currently taking place
-	actions: {},
-	presses: {},
-	locks: {},
-	delayedKeyup: [],
+ClientGameEngineClass = GameEngineClass.extend({
+	gSocket: null,
+	newMapPos: {x:0, y:0},
 	
-
-	mouse: {
-		x: 0,
-		y: 0
+	init:function() {
+		this.parent();
 	},
-	
-	screenMouse: {
-		x: 0,
-		y: 0
-	},
-	
-	setup: function () {
-	},	
-
-	//-----------------------
-	//When mouse moves, update our info on where it is
-	onMouseMoveEvent: function (event) {
-		this.mouse.x = event.clientX;
-		this.mouse.y = event.clientY;
-	},
-	//--------------------------
-	onKeyDownEvent: function (keyCode, event) {
-		//grab the keycode from the event listener
-		var code = keyCode;
-		//check the bindings dictionary for an
-		//action associated with the passed code
-		var action = this.bindings[code];
-		if(action) {
-			this.actions[action] = true;
-			if (event && event.cancelable)
-			    event.preventDefault();
-		    if (!this.locks[action]) {
-		        this.presses[action] = true;
-		        this.locks[action] = true;
-		    }
-		}
-	},
-	//----------------
-	onKeyUpEvent: function (keyCode, event) {
-		//when key is released, deactivate action next update
-		var code = keyCode;
-		var action = this.bindings[code];
-		if(action) {
-		    if (event && event.cancelable)
-		        event.preventDefault();
-			this.delayedKeyup.push(action);
-		}
-	},
-	//-----------------
-	bind: function (key, action) {
-		this.bindings[key] = action;
-	},
-	//-----------------
-	//this can be called on update cycle to
-	//let other classes know an action state is
-	//active or true
-	state: function (action) {
-    	return this.actions[action];
-  	},
-  	//-----------------
-	clearState: function (action) {
-		this.actions[action] = false;
-	},
-	//-----------------
-	pressed: function (action) {
-	    return this.presses[action];
-	},
-	//-----------------
-	clearPressed: function () {
-	    for (var i = 0; i < this.delayedKeyup.length; i++) {
-	        var action = this.delayedKeyup[i];
-	        this.actions[action] = false;
-	        this.locks[action] = false;
-	    }
-	    this.delayedKeyup = [];
-	    this.presses = {};
-	},
-    //-----------------------------------------
-    clearAllState: function () {
-        this.actions = {};
-        this.locks = {};
-        this.delayedKeyup = [];
-        this.presses = {};
-    },
-});
-
-KEY = {
-  'MOUSE1': -1,
-  'MOUSE2': -3,
-  'MWHEEL_UP': -4,
-  'MWHEEL_DOWN': -5,
-
-  'BACKSPACE': 8,
-  'TAB': 9,
-  'ENTER': 13,
-  'PAUSE': 19,
-  'CAPS': 20,
-  'ESC': 27,
-  'SPACE': 32,
-  'PAGE_UP': 33,
-  'PAGE_DOWN': 34,
-  'END': 35,
-  'HOME': 36,
-  'LEFT_ARROW': 37,
-  'UP_ARROW': 38,
-  'RIGHT_ARROW': 39,
-  'DOWN_ARROW': 40,
-  'INSERT': 45,
-  'DELETE': 46,
-  '0': 48,
-  '1': 49,
-  '2': 50,
-  '3': 51,
-  '4': 52,
-  '5': 53,
-  '6': 54,
-  '7': 55,
-  '8': 56,
-  '9': 57,
-  'A': 65,
-  'B': 66,
-  'C': 67,
-  'D': 68,
-  'E': 69,
-  'F': 70,
-  'G': 71,
-  'H': 72,
-  'I': 73,
-  'J': 74,
-  'K': 75,
-  'L': 76,
-  'M': 77,
-  'N': 78,
-  'O': 79,
-  'P': 80,
-  'Q': 81,
-  'R': 82,
-  'S': 83,
-  'T': 84,
-  'U': 85,
-  'V': 86,
-  'W': 87,
-  'X': 88,
-  'Y': 89,
-  'Z': 90,
-  'NUMPAD_0': 96,
-  'NUMPAD_1': 97,
-  'NUMPAD_2': 98,
-  'NUMPAD_3': 99,
-  'NUMPAD_4': 100,
-  'NUMPAD_5': 101,
-  'NUMPAD_6': 102,
-  'NUMPAD_7': 103,
-  'NUMPAD_8': 104,
-  'NUMPAD_9': 105,
-  'MULTIPLY': 106,
-  'ADD': 107,
-  'SUBSTRACT': 109,
-  'DECIMAL': 110,
-  'DIVIDE': 111,
-  'F1': 112,
-  'F2': 113,
-  'F3': 114,
-  'F4': 115,
-  'F5': 116,
-  'F6': 117,
-  'F7': 118,
-  'F8': 119,
-  'F9': 120,
-  'F10': 121,
-  'F11': 122,
-  'F12': 123,
-  'SHIFT': 16,
-  'CTRL': 17,
-  'ALT': 18,
-  'PLUS': 187,
-  'COMMA': 188,
-  'MINUS': 189,
-  'PERIOD': 190
-};
-
-var gInputEngine = new InputEngineClass();
-gInputEngine.KEY = KEY;
-/*Copyright 2011 Google Inc. All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-#limitations under the License.*/
-//----------------------------------
-//Modified by Mika Aguilar
-//----------------------------------
-
-//-----------------------------------
-//The render engine handles the canvas properties so other classes can use them,
-//and adds event listeners to the canvas and sends them to the inputEngine
-
-RenderEngineClass = Class.extend({
-	canvas: null,
-	context: null,
-	lastMouse: {
-		x: 0,
-		y: 0
-	},
-	lastMouseCanvas: {
-		x: 0,
-		y: 0,
-	},
-	//mouse position normalized and clamped to the canvas bounds
-	//not entirely sure why this is in the google src, but here it is
-	init: function () {
-		//console.log("Render engine init called");
-	},
-	
-	setup: function () {
-		this.canvas = document.getElementById('mainCanvas');
-		this.context = this.canvas.getContext('2d');
-		this.canvas.width = window.innerWidth;
-		this.canvas.height = window.innerHeight;
-		//add event listeners and run specified functions in this class when
-		//they bubble up
-		window.addEventListener('keydown', this.keydown, false);
-		window.addEventListener('keyup', this.keyup, false);
+	//---------------------------------
+	setup: function() {
+		this.parent();
 		
-		window.addEventListener('mousedown', this.mousedown, false);
-		window.addEventListener('mouseup', this.mouseup, false);
-		window.addEventListener('mousemove', this.mousemove, false);
+		gInputEngine.bind(gInputEngine.KEY.W, 'move-up');
+        gInputEngine.bind(gInputEngine.KEY.S, 'move-down');
+        gInputEngine.bind(gInputEngine.KEY.A, 'move-left');
+        gInputEngine.bind(gInputEngine.KEY.D, 'move-right');
+        
+        gInputEngine.bind(gInputEngine.KEY.SHIFT, 'run');
+        
+        //TODO MEA change these to 'attack_up' etc and make these stop the character to shoot/swing weapon
+        //gInputEngine.bind(gInputEngine.KEY.UP_ARROW, 'fire-up');
+        //gInputEngine.bind(gInputEngine.KEY.DOWN_ARROW, 'fire-down');
+        //gInputEngine.bind(gInputEngine.KEY.LEFT_ARROW, 'fire-left');
+        //gInputEngine.bind(gInputEngine.KEY.RIGHT_ARROW, 'fire-right');
+
+        //firing
+        //gInputEngine.bind(gInputEngine.KEY.MOUSE1, 'fire0-mouse');
+        //gInputEngine.bind(gInputEngine.KEY.SHIFT, 'fire1-instead-of-0');
+        //gInputEngine.bind(gInputEngine.KEY.MOUSE2, 'fire1-mouse');
+        //gInputEngine.bind(gInputEngine.KEY.SPACE, 'fire2');
+		//spawn the player when game starts
+		//TODO this is probably not the best place to put this or even a great way to do it, but for now...
+		
+
+	},
+	//----------------------------------
+	update: function() {
+		this.parent();
+		//console.log('gGameEngineUpdate, Client');
+		
+		
+		//Make sure the part of the map that is being drawn matches the viewport
+		if(gRenderEngine.canvas.width != this.gMap.viewRect.w) {
+		    this.gMap.viewRect.w = gRenderEngine.canvas.width;
+		}
+		if(gRenderEngine.canvas.height != this.gMap.viewRect.h) {
+		    this.gMap.viewRect.h = gRenderEngine.canvas.height;
+		} 
+		
+		if (!this.gPlayer0 || this.gPlayer0.isDead) {
+		    return;
+		}
+		
+		var pInput = {
+			x: 0,
+			y: 0,
+			faceAngle0to7: 0, //Limit facing to 8 directions
+			walking: false,
+		};
+		var move_dir = new Vec2(0, 0);
+		if (gInputEngine.state('move-up'))
+			move_dir.y -= 1;
+		if (gInputEngine.state('move-down'))
+			move_dir.y += 1;
+		if (gInputEngine.state('move-left'))
+			move_dir.x -= 1;
+		if (gInputEngine.state('move-right'))
+			move_dir.x += 1;
+		//check if a move key has been pressed, if so make walk
+		if (move_dir.LengthSquared()) {
+			pInput.walking = true;
+			//Set move_dir to a unit vector in the same direction
+			//it's currently pointing
+			move_dir.Normalize();
+			//Then multiply move_dir by players set walkSpeed, this
+			//allows us to modify walkSpeed outside of this function
+			//MEA Added a check to see if we should be running or not
+			if(!gInputEngine.state('run')){
+			    move_dir.Multiply(this.gPlayer0.walkSpeed);
+			    //check animation speed, reset if needed
+			    if (this.gPlayer0._walkSpriteAnimList[0]._animIncPerFrame != 0.2){
+    			    for(i = 0;i < 4;i++){
+			            this.gPlayer0._walkSpriteAnimList[i]._animIncPerFrame = 0.2;
+			        }
+			    }
+			}
+			if(gInputEngine.state('run')){
+			    move_dir.Multiply(this.gPlayer0.walkSpeed * 2);
+			    //change the animation speed to match
+			    for(i = 0;i < 4;i++){
+			        this.gPlayer0._walkSpriteAnimList[i]._animIncPerFrame = 0.4;
+			    }
+			}
+			pInput.x += move_dir.x;
+			pInput.y += move_dir.y;
+		} else {
+			pInput.walking = false;
+			pInput.x = 0;
+			pInput.y = 0;
+		}
+		
+		var dPX = this.gPlayer0.pos.x;
+		var dPY = this.gPlayer0.pos.y;
+		
+		//Facing direction from mouse or keyboard, defaults to last value
+		//var faceAngleRadians = this.gPlayer0.faceAngleRadians;
+		//pInput.faceAngle0to7 = (Math.round(faceAngleRadians/(2*Math.PI)* 8) + 8) % 8;
+		
+		//Record and sent out inputs
+		this.gPlayer0.pInput = pInput;
+	    this.gPlayer0.sendUpdates();
+	    
+	    this.gPlayer0.applyInputs();
+		
+		//recenter our map bounds based upon the player's centered position
+		this.newMapPos.x = this.gPlayer0.pos.x - (this.gMap.viewRect.w * 0.5);
+		this.newMapPos.y = this.gPlayer0.pos.y - (this.gMap.viewRect.h * 0.5);
+	},//end of update
+	//-----------------------------------------
+	run: function() {
+		this.parent();
+		var fractionOfNextPhysicsUpdate = this.timeSincePhysicsUpdate / Constants.PHYSICS_LOOP_HZ;
+			
+		this.update();
+		
+		this.draw(fractionOfNextPhysicsUpdate);
+		gInputEngine.clearPressed();
+	},
+	//-----------------------------------------
+	//This function draws the entire frame to the canvas each update.
+	draw: function (fractionOfNextPhysicsUpdate) {
+	    
+	    // Alpha-beta filter on camera
+        this.gMap.viewRect.x = parseInt(alphaBeta(this.gMap.viewRect.x, this.newMapPos.x, 0.9));
+        this.gMap.viewRect.y = parseInt(alphaBeta(this.gMap.viewRect.y, this.newMapPos.y, 0.9));
+    
+	    // Draw map.
+	    this.gMap.draw(null);
+	    
+	    //no death so haven't implemented yet.
+		this.entities.forEach(function(entity){
+			entity.draw(fractionOfNextPhysicsUpdate);
+		});
+		
+		//Bucket entities by zIndex
+		/*var fudgeVariance = 128;
+		var zIndex_array = [];
+		var entities_bucketed_by_zIndex = {}
+		this.entities.forEach(function(entity){
+			if(zIndex_array.indexOf(entity.zIndex) === -1)
+			{
+				zIndex_array.push(entity.zIndex);
+				entities_bucketed_by_zIndex[entity.zIndex] = [];
+			}
+			entities_bucketed_by_zIndex[entity
+		zIndex_array.sort(function(a,b){return a-b;}});
+		zIndex_array.forEach(function(zIndex){
+			entities_bucketed_by_zIndex[zIndex].forEach(function(entity){
+				entity.draw(fractionOfNextPhysicsUpdate);
+			});
+		});*/
 	},
 	
-	keydown: function (event) {
-		//I think this checks to see if we're trying to type text
-		//into something like a textbox so we can ignore those keystrokes
-		if (event.target.type == 'text') {
-			return;
-		}
-		//tell the input engine to run the event assigned to this key
-		gInputEngine.onKeyDownEvent(event.keyCode, event);
-	},
-	//------------------------------
-	keyup: function (event) {
-		//if we intend to get text input we can ignore
-		if (event.target.type == 'text') {
-			return;
-		}
-		gInputEngine.onKeyUpEvent(event.keyCode, event);
-	},
-	//commenting these out, I have no events binded to this
- 	 /*mousedown: function (event) {
-    	gInputEngine.onMouseDownEvent(event.button, gRenderEngine.lastMouse.x, gRenderEngine.lastMouse.y, event);
-  	},
-
-  	//-----------------------------------------
- 	mouseup: function (event) {
-    	gInputEngine.onMouseUpEvent(event.button, gRenderEngine.lastMouse.x, gRenderEngine.lastMouse.y, event);
-  	},*/
-  
-	mousemove: function (event) {
-    	var el = this.canvas;
-    	var pos = {
-      		left: 0,
-      		top: 0
-    	};
-    	while (el != null) {
-      		pos.left += el.offsetLeft;
-      		pos.top += el.offsetTop;
-      		el = el.offsetParent;
-    	}
-    	var tx = event.pageX;
-    	var ty = event.pageY;
-
-    	gRenderEngine.lastMouse.x = tx;
-    	gRenderEngine.lastMouse.y = ty;
-		//We've grabbed the position of the mouse, now we're telling the inputEngine where it is
-    	gInputEngine.onMouseMoveEvent(gRenderEngine.lastMouse.x,gRenderEngine.lastMouse.y);
-
-    	//weapons and events need the mouse locations clamped to the canvas bounds
-    	gRenderEngine.lastMouseCanvas.x = gRenderEngine.lastMouse.x;
-    	gRenderEngine.lastMouseCanvas.y = gRenderEngine.lastMouse.y - gRenderEngine.canvas.offsetTop;
-  	},
-  	
-    getCanvasPosition: function (screenPosition) {
-
-        //transfer position to world-space
-        return {
-            x: screenPosition.x - this.canvas.offsetLeft,
-            y: screenPosition.y - this.canvas.offsetTop
-            };
-    },
-
-    getScreenPosition: function(worldPosition) {
-        return {
-            x: -(gGameEngine.gMap.viewRect.x) + worldPosition.x,
-            y: -(gGameEngine.gMap.viewRect.y) + worldPosition.y
+	//------------------------------------------------
+	preloadComplete: false,
+	preloadAssets: function ()
+	{
+        //go load images first
+        var assets = new Array();
+        assets.push("img/master.png");
+        
+        var map = mapOutside;
+        for (var i = 0; i < map.tilesets.length; i++) {
+            assets.push("img/" + map.tilesets[i].image.replace(/^.*[\\\/]/, ''));
         }
-    },
-    getWorldPosition: function (screenPosition) {
-        var gMap = gGameEngine.gMap;
-
-        //transfer position to world-space
-        return {
-            x: screenPosition.x + gMap.viewRect.x,
-            y: screenPosition.y + gMap.viewRect.y
-        };
-    },
+        //TODO sounds
+        loadAssets(assets, function() 
+        {
+            xhrGet("img/master.json", false, 
+                function(data){
+                    var obj = JSON.parse(data.response);
+                    var sheet = new SpriteSheetClass();
+                    gSpriteSheets['master'] = sheet;
+                    sheet.load("img/master.png");
+                    
+                    for (var key in obj.frames)
+                    {
+                        var val = obj.frames[key];
+                        var cx=-val.frame.w * 0.5;
+                        var cy=-val.frame.h * 0.5;
+                        
+                        if(val.trimmed)
+                        {
+                            cx = val.spriteSourceSize.x - (val.sourceSize.w * 0.5);
+                            cy = val.spriteSourceSize.y - (val.sourceSize.h * 0.5);
+                        }
+                        
+                        sheet.defSprite(key, val.frame.x, val.frame.y, val.frame.w, val.frame.h, cx, cy);
+                    }
+                    gGameEngine.preloadComplete = true;
+            });
+        });
+        
+        //google says effects!@ here in comments,
+        //but no code is here. no idea why
+    }
 });
 
-var gRenderEngine = new RenderEngineClass();
+var gGameEngine = new ClientGameEngineClass();
 /*Copyright 2011 Google Inc. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");

@@ -11039,11 +11039,11 @@ for (i = 0; i < Box2D.postDefs.length; ++i) Box2D.postDefs[i]();
 delete Box2D.postDefs;
 
 ConstantsClass = Class.extend({
-	GAME_UPDATES_PER_SEC : 10,
-	GAME_LOOP_HZ: 1.0 / 10.0,
+	GAME_UPDATES_PER_SEC : 30,
+	GAME_LOOP_HZ: 1.0 / 30.0,
 	
-	PHYSICS_UPDATES_PER_SEC: 60,
-	PHYSICS_LOOP_HZ: 1.0 / 60.0,
+	PHYSICS_UPDATES_PER_SEC: 120,
+	PHYSICS_LOOP_HZ: 1.0 / 120.0,
 });
 
 var Constants = new ConstantsClass();
@@ -11390,15 +11390,12 @@ GameEngineClass = Class.extend({
 		                {
 		                    nm[i] = u[i].ent.name || '';
 		                    if(u[i].ent.walkSpeed != null){
-		                        console.log('Player colliding!');
 		                        typ[i] = 0; }//it's a player
 		                    else{
-		                        console.log('Object colliding!');
 		                        typ[i] = 1;} //either a projectile or enviro object
 		                }
 		                else
 		                {
-		                    console.log('Wall colliding!');
 		                    typ[i] = 2; //it's a wall
 		                }
 		            }
@@ -11412,8 +11409,6 @@ GameEngineClass = Class.extend({
 			        if(typ[1] == 0)
 				        if(typ[0] == 0 || typ[0] == 2)
 					        return;
-			    console.log('Nor a player and a wall!');
-					        
 					        
 			if(IS_SERVER)		
 		    {
@@ -11576,9 +11571,9 @@ GameEngineClass = Class.extend({
 		//TODO only doing one player, should be doing a bunch
 	    var plyr = this.gPlayer0;
 	    if (plyr) {
-	    var pPos = plyr.physBody.GetPosition();
-	    plyr.pos.x = pPos.x;
-	    plyr.pos.y = pPos.y;
+	    	var pPos = plyr.physBody.GetPosition();
+	    	plyr.pos.x = pPos.x;
+	    	plyr.pos.y = pPos.y;
 	    }
 	},
 	
@@ -11902,7 +11897,6 @@ var TileMapLoaderClass = Class.extend({
   imgLoadCount:0,
   initialize: function () {},
   load: function (map) {
-      console.log('loadmap');
     this.currMapData = map;
     this.numXTiles = map.width;
     this.numYTiles = map.height;
@@ -12166,7 +12160,7 @@ var TileMapLoaderClass = Class.extend({
     }
 
     //CLM used to help debugging
-    var drawCollisionShapes = false;
+    var drawCollisionShapes = true;
     if (drawCollisionShapes) {
       //load our object and collision layers
       for (var layerIdx = 0; layerIdx < this.currMapData.layers.length; layerIdx++) {
@@ -12263,7 +12257,7 @@ var TileMapLoaderClass = Class.extend({
 			// Nine arguments: the element, source (x,y) coordinates, source width and 
 			// height (for cropping), destination (x,y) coordinates, and destination width 
 			// and height (resize).
-	//		ctx.fillRect(worldX,worldY,this.tileSize.x, this.tileSize.y);
+			//ctx.fillRect(worldX,worldY,this.tileSize.x, this.tileSize.y);
 			
 			ctx.drawImage(tPKT.img,
 							tPKT.px, tPKT.py, 

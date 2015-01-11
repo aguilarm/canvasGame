@@ -15,102 +15,100 @@ See the License for the specific language governing permissions and
 //Modified by Mika Aguilar
 //----------------------------------
 
-InputEngineClass = Class.extend({
-	// Dictionary mapping ASCII key codes to string values describing intended actions
-	bindings:{},
-	//Dictionary of actions that could be taken and a boolean indicating whether it's currently taking place
-	actions: {},
-	presses: {},
-	locks: {},
-	delayedKeyup: [],
-	
-
-	mouse: {
-		x: 0,
-		y: 0
-	},
+var gInputEngine = {
+    bindings:{},
+    actions: {},
+    presses: {},
+    locks: {},
+    delayedKeyup: [],
+	    
+    mouse: {
+	    x: 0,
+	    y: 0
+    },
 	
 	screenMouse: {
-		x: 0,
-		y: 0
-	},
+    	x: 0,
+    	y: 0
+    },
 	
-	setup: function () {
-	},	
-
-	//-----------------------
-	//When mouse moves, update our info on where it is
-	onMouseMoveEvent: function (event) {
-		this.mouse.x = event.clientX;
-		this.mouse.y = event.clientY;
+    //MEA - these are placeholders
+    onMouseDownEvent: function (event) {
+        return;
+    },
+    
+    onMouseUpEvent: function (event) {
+        return;
+    },
+    
+    onMouseMoveEvent: function (event) {
+	    this.mouse.x = event.clientX;
+	    this.mouse.y = event.clientY;
 	},
-	//--------------------------
-	onKeyDownEvent: function (keyCode, event) {
-		//grab the keycode from the event listener
-		var code = keyCode;
-		//check the bindings dictionary for an
-		//action associated with the passed code
-		var action = this.bindings[code];
-		if(action) {
-			this.actions[action] = true;
-			if (event && event.cancelable)
-			    event.preventDefault();
-		    if (!this.locks[action]) {
-		        this.presses[action] = true;
-		        this.locks[action] = true;
-		    }
-		}
-	},
-	//----------------
-	onKeyUpEvent: function (keyCode, event) {
-		//when key is released, deactivate action next update
-		var code = keyCode;
-		var action = this.bindings[code];
-		if(action) {
+    	
+    onKeyDownEvent: function (keyCode, event) {
+		var code = keyCode,
+		    action = this.bindings[code];
+		    
+    	if(action) {
+	    	this.actions[action] = true;
 		    if (event && event.cancelable)
-		        event.preventDefault();
-			this.delayedKeyup.push(action);
+			    event.preventDefault();
+    	    if (!this.locks[action]) {
+	            this.presses[action] = true;
+	            this.locks[action] = true;
+            }
+        }
+    },
+	    
+    onKeyUpEvent: function (keyCode, event) {
+		var code = keyCode,
+    	    action = this.bindings[code];
+	    
+	    if(action) {
+		    if (event && event.cancelable)
+    	        event.preventDefault();
+	    	this.delayedKeyup.push(action);
 		}
-	},
-	//-----------------
-	bind: function (key, action) {
-		this.bindings[key] = action;
-	},
-	//-----------------
-	//this can be called on update cycle to
-	//let other classes know an action state is
-	//active or true
-	state: function (action) {
-    	return this.actions[action];
-  	},
-  	//-----------------
-	clearState: function (action) {
-		this.actions[action] = false;
-	},
-	//-----------------
-	pressed: function (action) {
-	    return this.presses[action];
-	},
-	//-----------------
-	clearPressed: function () {
-	    for (var i = 0; i < this.delayedKeyup.length; i++) {
-	        var action = this.delayedKeyup[i];
-	        this.actions[action] = false;
-	        this.locks[action] = false;
-	    }
-	    this.delayedKeyup = [];
-	    this.presses = {};
-	},
-    //-----------------------------------------
+    },
+	    
+    bind: function (key, action) {
+	    this.bindings[key] = action;
+    },
+	    
+    state: function (action) {
+	    return this.actions[action];
+    },
+  	    
+    clearState: function (action) {
+	    this.actions[action] = false;
+    },
+	       
+    pressed: function (action) {
+        return this.presses[action];
+    },
+	    
+    clearPressed: function () {
+        var action;
+        for (var i = 0; i < this.delayedKeyup.length; i++) {
+            action = this.delayedKeyup[i];
+            this.actions[action] = false;
+            this.locks[action] = false;
+        }
+        this.delayedKeyup = [];
+        this.presses = {};
+    },
+	    
     clearAllState: function () {
         this.actions = {};
         this.locks = {};
         this.delayedKeyup = [];
         this.presses = {};
     },
-});
 
-KEY = {
+};
+
+var KEY = {
   'MOUSE1': -1,
   'MOUSE2': -3,
   'MWHEEL_UP': -4,
@@ -205,5 +203,4 @@ KEY = {
   'PERIOD': 190
 };
 
-var gInputEngine = new InputEngineClass();
 gInputEngine.KEY = KEY;

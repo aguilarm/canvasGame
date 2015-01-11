@@ -112,6 +112,7 @@ limitations under the License.
                         "./scripts/core/spriteSheet.js",
                     ];
                 } else {
+                    console.log('loading minified scripts...');
                     inputScripts = [
                         //Shared
                         "../shared/shared.min.js",
@@ -162,8 +163,7 @@ limitations under the License.
                 document.getElementById('mainCanvas').style.display = "block";
                 
                 console.log('loaded scripts');
-            
-                gInputEngine.setup();
+                
                 gRenderEngine.setup();
                 gGameEngine.setup();
                 
