@@ -13,5 +13,8 @@ First, I'm going to try to get the engine working on it's own and then add serve
 
 ## Progress
 
+1/11/2015 - Returning to this project with the intention of learning more advanced ways to use Socket.io.  Before implementing, I'm going to refactor the majority of the project using what I've learned over the past several months about JavaScript preformance and formatting.  Even after one day, the game hardly lags especially compared to previously where I encountered frequent major slowdown spikes.  
+Ultimate goal is to stop relying on the Class system being used and use a more simple pattern with objects and prototyping.
+
 As of v0.1.0, the game is complete on the most basic level.  It could use a lot of optimization but all of the big parts are working together to allow a single player to walk around the map, bump into things, and even use a teleporter.
 
