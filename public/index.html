@@ -21,9 +21,9 @@ limitations under the License.
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>canvasGame</title>
         
-        <link href="./css/main.css" rel="stylesheet">
+        <link href="css/main.css" rel="stylesheet">
         
-        <script type="text/javascript" src="./scripts/yepnope.1.5.4-min.js"></script>
+        <script type="text/javascript" src="js/yepnope.1.5.4-min.js"></script>
         
         <link rel="shortcut icon" href="img/favicon.ico"  type="image/x-icon" >
         
@@ -66,9 +66,7 @@ limitations under the License.
         </script>
         
         <!-- VITALS -->
-        <script src="./scripts/pregame/xhr.js"></script>
-        <script src="./scripts/pregame/assetLoader.js"></script>
-        <script src="../shared/core/core.js"></script>
+        <script src="js/pregame.js"></script>
         
         <script type="text/javascript">
             IS_SERVER = false;
@@ -81,43 +79,12 @@ limitations under the License.
                 if (debug === 1) {
                     console.log('starting in development mode');
                     inputScripts = [
-                        //Shared scripts
-                        "../shared/core/core.js",
-                        "../shared/core/box2D.js",
-                        "../shared/core/constants.js",
-                        "../shared/core/factory.js",
-                        "../shared/core/timer.js",
-                        "../shared/core/entity.js",
-                        "../shared/core/gameEngine.js",
-                        "../shared/core/physicsEngine.js",
-                        "../shared/core/player.js",
-                        "../shared/core/tileMap.js",
-                        "../shared/core/util.js",
-                            
-                        //maps
-                        "../shared/maps/outside.js",
-                        
-                        //environment objects
-                        "../shared/environment/spawnPoint.js",
-                        "../shared/environment/spawner.js",
-                        "../shared/environment/teleporter.js",
-                    
-                        //CLM note , we need to load the client scripts AFTER the shared scripts
-                        //allowing them to overload any global objects defined above.
-                        // Client-side scripts
-                        "./scripts/core/clientGameEngine.js",
-                        "./scripts/core/clientPlayer.js",
-                        "./scripts/core/inputEngine.js",
-                        "./scripts/core/renderEngine.js",
-                        "./scripts/core/spriteSheet.js",
+                        '/js/clientgame.js'
                     ];
                 } else {
                     console.log('loading minified scripts...');
                     inputScripts = [
-                        //Shared
-                        "../shared/shared.min.js",
-                        //Client
-                        "./scripts/client.min.js"
+                        '/js/clientgame.min.js'
                     ];
                 }
                 

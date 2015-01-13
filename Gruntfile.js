@@ -7,56 +7,61 @@ module.exports = function(grunt) {
         concat: {
             client: {
                 src: [
-                    'client/scripts/core/inputEngine.js',
-                    'client/scripts/core/renderEngine.js',
-                    'client/scripts/core/clientPlayer.js',
-                    'client/scripts/core/clientGameEngine.js',
-                    'client/scripts/core/spriteSheet.js'
+                    'src/client/scripts/core/inputEngine.js',
+                    'src/client/scripts/core/renderEngine.js',
+                    'src/client/scripts/core/clientPlayer.js',
+                    'src/client/scripts/core/clientGameEngine.js',
+                    'src/client/scripts/core/spriteSheet.js'
                 ],
-                dest: 'client/scripts/client.js'
+                dest: 'src/client/clientgame.js'
             },
             shared: {
                 src: [
-                    "shared/core/core.js",
-                    "shared/core/box2D.js",
-                    "shared/core/constants.js",
-                    "shared/core/factory.js",
-                    "shared/core/timer.js",
-                    "shared/core/entity.js",
-                    "shared/core/gameEngine.js",
-                    "shared/core/physicsEngine.js",
-                    "shared/core/player.js",
-                    "shared/core/tileMap.js",
-                    "shared/core/util.js",
-                    "shared/maps/outside.js",
-                    "shared/environment/spawnPoint.js",
-                    "shared/environment/spawner.js",
-                    "shared/environment/teleporter.js",
+                    "src/shared/core/core.js",
+                    "src/shared/core/box2D.js",
+                    "src/shared/core/constants.js",
+                    "src/shared/core/factory.js",
+                    "src/shared/core/timer.js",
+                    "src/shared/core/entity.js",
+                    "src/shared/core/gameEngine.js",
+                    "src/shared/core/physicsEngine.js",
+                    "src/shared/core/player.js",
+                    "src/shared/core/tileMap.js",
+                    "src/shared/core/util.js",
+                    "src/shared/maps/outside.js",
+                    "src/shared/environment/spawnPoint.js",
+                    "src/shared/environment/spawner.js",
+                    "src/shared/environment/teleporter.js",
                 ],
-                dest: 'shared/shared.js'
+                dest: 'src/shared/sharedgame.js'
+            },
+            pregame: {
+                src: [
+                    "src/client/scripts/pregame/assetLoader.js",
+                    "src/client/scripts/pregame/xhr.js",
+                    "src/shared/core/core.js"
+                ],
+                dest: 'public/js/pregame.js'
+            },
+            merge: {
+                src: [
+                    "src/shared/sharedgame.js",
+                    "src/client/clientgame.js"
+                ],
+                dest: 'public/js/clientgame.js'
             }
         },
         
         uglify: {
-            client: {
+            min: {
                 options: {
                     compress: {
                         drop_console: true
                     },
                     preserveComments: false,
                 },
-                src: 'client/scripts/client.js',
-                dest: 'client/scripts/client.min.js'
-            },
-            shared: {                
-                options: {
-                    compress: {
-                        drop_console: true
-                    },
-                    preserveComments: false,
-                },
-                src: 'shared/shared.js',
-                dest: 'shared/shared.min.js',
+                src: 'public/js/clientgame.js',
+                dest: 'public/js/clientgame.min.js'
             }
         },
         
@@ -74,12 +79,12 @@ module.exports = function(grunt) {
         watch: {
             dev: {
                 files: [
-                    'client/scripts/core/*.js',
-                    'client/scripts/pregame/*.js',
-                    'shared/core/*.js', 
-                    'shared/core/environment/*.js',
-                    'shared/core/maps/*.js',
-                    'shared/core/weapons/*.js'
+                    'src/client/scripts/core/*.js',
+                    'src/client/scripts/pregame/*.js',
+                    'src/shared/core/*.js', 
+                    'src/shared/core/environment/*.js',
+                    'src/shared/core/maps/*.js',
+                    'src/shared/core/weapons/*.js'
                     ],
                 tasks: ['concat', 'uglify']
             }
