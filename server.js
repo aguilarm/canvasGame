@@ -8,8 +8,8 @@ app.use('js', express.static(__dirname + '/js'));
 app.use(express.static(__dirname + '/public'));
 
 io.on('connection', function (socket) {
-    console.log('New user: ' + socket.id);
-    console.log(socket.client.request.headers['x-forwarded-for']);
+    var clientIP = socket.client.request.headers['x-forwarded-for'];
+    console.log('New user: ' + clientIP);
     socket.on('playerUpdate', function (player) {
         console.log(player.pos);
     });

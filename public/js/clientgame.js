@@ -15653,10 +15653,6 @@ ClientGameEngineClass = GameEngineClass.extend({
         //gInputEngine.bind(gInputEngine.KEY.SHIFT, 'fire1-instead-of-0');
         //gInputEngine.bind(gInputEngine.KEY.MOUSE2, 'fire1-mouse');
         //gInputEngine.bind(gInputEngine.KEY.SPACE, 'fire2');
-		//spawn the player when game starts
-		//TODO this is probably not the best place to put this or even a great way to do it, but for now...
-		
-
 	},
 	//----------------------------------
 	update: function() {
