@@ -23,7 +23,8 @@ limitations under the License.
         
         <link href="css/main.css" rel="stylesheet">
         
-        <script type="text/javascript" src="js/yepnope.1.5.4-min.js"></script>
+        <script src="vendor/js/yepnope.1.5.4-min.js"></script>
+        <script src="vendor/js/socket.io.js"></script>
         
         <link rel="shortcut icon" href="img/favicon.ico"  type="image/x-icon" >
         
@@ -38,31 +39,6 @@ limitations under the License.
                     window.setTimeout(callback, 1000 / 60);
                 };
         })();
-        </script>
-        
-        <script type="text/javascript" id="GENERALJS">
-            //---------------------------------------
-            var $doc = function (selector) {
-                    return selector.charAt(0) == '#' ? document.getElementById(selector.substr(1)) : document.getElementsByTagName(selector);
-                };
-            
-            //---------------------------------------
-            var $new = function (name) {
-                    return document.createElement(name);
-                };
-                
-                function checkWait(conditionFunction, resultFunction)
-                {
-                    var tev = setInterval(function()
-                        {
-                            if(conditionFunction())
-                            {
-                                resultFunction();
-                                clearInterval(tev);
-                            }
-                        }, 1000);
-                }
-            
         </script>
         
         <!-- VITALS -->
@@ -167,6 +143,11 @@ limitations under the License.
     </div>
     
     <canvas id="mainCanvas"></canvas>
+    
+    <script>
+        var socket = io();
+        
+    </script>
     
 </body>
 </html>
