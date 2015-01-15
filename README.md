@@ -1,15 +1,13 @@
 canvasGame
 ==========
 
-Creating an html5 game using the canvas element and a ton of (vanilla) javascript, following the <a href="https://www.udacity.com/course/cs255">Udacity HTML5 Game Development course</a> as well as refrencing and the actual GRITS game code.  The Udacity course is a great resource, but it woefully fails at actually allowing someone to build an entire game engine and use it just following the class.  After the class, you can EDIT the game engine a little bit, and understand how key parts work, but a huge majority of it is still kind of a mystery.  So with this project I'm hoping to fill in the gaps.
+This project was born when I went through the <a href="https://www.udacity.com/course/cs255">Udacity HTML5 Game Development course</a>.  It was my first interaction with a large-scale JavaScript project, and I have gone through all of the code by hand implementing features piece by piece to create a quite different, single player version of the game using awesome art from <a href="http://opengameart.org/">Open Game Art (more info in License)</a>.
+
+It has since grown to one of my favorite side-projects to work on and I'm constantly modernizing the source code as I learn new things.  So far, it uses **node.js**, **express**, **socket.io**, **box2d physics**, and a LOT of vanilla JavaScript using an old <a href="http://ejohn.org/blog/simple-javascript-inheritance/">Class shim by John Resig</a> that seems to hold up well, but I can't wait to replace it with ES6 classes.
 
 ## Goal
 
-When I'm finished with this project, I hope to understand how to write the entire thing from scratch.  This is why I'm implementing it in parts; I'm going through every component and experimenting as I go to learn how each section interacts with all of the others.
-
-Also, GRITS is a robot fighting game that has a controllable robot which can pickup various objects like powerups and health from the gameworld and shoots other AI or player controlled robots.  My ultimate goal is to use this framework to build something more like BrowserQuest, a more Zelda-like RPG game, and the Udacity course has been a fun way to do it.  The goal is more to really understand Javascript more than how a game works.
-
-First, I'm going to try to get the engine working on it's own and then add server interaction so I can have different players login, or perhaps have a login system where you can save a character tied to an account with stats and items.
+Long-term I'd like to have a simple game that plays kind of like <a href="http://browserquest.mozilla.org/">Browser Quest</a> which is a Zelda-like top down point and click RPG with multiplayer.  Player accounts and customization will most likely be implemented after I have multiplayer/netcode working how I'd like it to.
 
 ## Progress
 
