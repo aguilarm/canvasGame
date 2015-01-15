@@ -11352,6 +11352,9 @@ GameEngineClass = Class.extend({
 	timeSincePhysicsUpdate: 0,
 	clock: null,
 	
+	_deferredKill: [],
+	_deferredRespawn: [],
+	
 	dataTypes: [],
 	gPlayer0: null,
 	gPlayers: {},
@@ -11447,8 +11450,7 @@ GameEngineClass = Class.extend({
 		this.gPlayer0 = this.spawnEntity("Player", 1380.04, 1456.44, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
 		console.log('spawning player from gameEngine.js');
 	},
-	//----------------------------------
-	//-----------------------------
+	
     onCollisionTouch: function(bodyA,bodyB,impulse)
         {
             console.log('gameEngine.onCollisionTouch');
@@ -11485,6 +11487,41 @@ GameEngineClass = Class.extend({
 		return null;
 	},
 	
+	getEntitiesByLocation: function (pos) {
+		var a = [];
+		for (var i = 0; i < this.entities.length; i++) {
+			var ent = this.entities[i];
+			if (ent.pos.x <= pos.x && ent.pos.y <= pos.y && (ent.pos.x + ent.size.x) > pos.x && (ent.pos.y + ent.size.y) > pos.y) {
+				a.push(ent);
+			}
+		}
+		return a;
+	},
+	
+	getEntitiesWithinCircle: function (center, radius) {
+		var a = [];
+		for (var i = 0; i < this.entities.length; i++) {
+			var ent = this.entities[i];
+			var dist = Math.sqrt((ent.pos.x - center.x)*(ent.pos.x - center.x) + (ent.pos.y - center.y)*(ent.pos.y - center.y));
+			if (dist <= radius) {
+				a.push(ent);
+			}
+		}
+		return a;
+	},
+	
+	getEntitiesByType: function (typeName) {
+    	var entityClass = Factory.nameClassMap[typeName];
+    	var a = [];
+    	for (var i = 0; i < this.entities.length; i++) {
+      		var ent = this.entities[i];
+      		if (ent instanceof entityClass && !ent._killed) {
+        		a.push(ent);
+      		}
+    	}
+		return a;
+  	},
+	
 	nextSpawnId: function () {
 	    return this.spawnCounter++;
 	},
@@ -11515,12 +11552,24 @@ GameEngineClass = Class.extend({
 			gGameEngine.namedEntities[ent.name] = ent;
 		}
 		gGameEngine.onSpawned(ent);
-		if (ent.type == "Player") {
-		    console.log('SPAWING PLAYER, ASSIGNING TO GPLAYER0');
-			this.gPlayer0 = ent;
+		if (ent.type === "Player") {
+			this.gPlayers[ent.name] = ent;
 		}
 		return ent;
 	},
+	
+	respawnEntity: function (respkt) {
+		if(IS_SERVER) {
+			var player = this.namedEntities[respkt.from];
+			if (!player) {
+				console.log("player.id = " + respkt.from + " not found for respawn!");
+				return;
+			}
+			this._deferredRespawn.push(respkt);
+		}
+	},
+	
+	
 	
 	run: function () {
 		this.fps++;
