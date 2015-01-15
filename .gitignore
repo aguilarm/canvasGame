@@ -3,3 +3,7 @@
 _notes
 
 node_modules
+
+clientgame.min.js
+clientgame.js
+sharedgame.js

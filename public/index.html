@@ -45,7 +45,16 @@ limitations under the License.
         <script src="js/pregame.js"></script>
         
         <script type="text/javascript">
-            IS_SERVER = false;
+            function checkWait(conditionFunction, resultFunction) {
+                var tev = setInterval(function () {
+                    if (conditionFunction()) {
+                        resultFunction();
+                        clearInterval(tev);
+                    }
+                }, 1000);
+            }
+            
+            var IS_SERVER = false;
             
             function loadGame (gameURL, player_game_key, debug) {
                 document.getElementById("startGame").innerHTML = "Loading...";
