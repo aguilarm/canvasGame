@@ -20,22 +20,25 @@ PlayerClass = EntityClass.extend({
 	walking: false,
 	physBody: null,
 	faceAngleRadians: 0,
+	health: 100,
+	maxHealth: 100,
 	team: 0,  //0 or 1
+	color: 0,
 	isDead: false,
 	zIndex: 1,
 	init: function (inputx, inputy, settings) {
-		this.hsize = {x:32, y:50};
-		console.log(this.hsize);
+		settings.hsize = {x:32, y:50};
 		this.parent(inputx, inputy, settings);
+		this.team = settings.team;
 		var entityDef = {
 			id: "player",
 			x: this.pos.x,
 			y: this.pos.y,
 			halfHeight: this.hsize.x / 2, //JJG: divide by 2 to let the player squeeze through narrow corridors
-			halfWidth: this.hsize.y / 2,  //MEA: removed division, I want player to have full size collision
+			halfWidth: this.hsize.y / 2,
 			damping: 0,
 			angle: 0,
-			categories: ['player', settings.team == 0 ? 'team0' : 'team1'],
+			categories: ['player', settings.team === 0 ? 'team0' : 'team1'],
 			collidesWith: ['all'],
 			userData: {
 				"id": "player",
@@ -47,11 +50,27 @@ PlayerClass = EntityClass.extend({
 		this.userID = settings.userID;
 		this.displayName = settings.displayName;
 	},
-	//---------------------------------------------------
+	
 	update: function(){
 	    this.parent();
-	    //TODO: this would normally handle respawns/deaths
-		this.physBody.SetActive(true);
+	    
+	    if(this.health <= 0) {
+	    	if (IS_SERVER && !this.isDead)
+	    		Server.stats.log('death_pos', {'x':this.pos.x, 'y':this.pos.y, 'team':this.team});
+	    	this.isDead = true;
+	    	this.physBody.SetActive(false);
+	    } else {
+	    	//did we just respawn?
+	    	if (this.isDead) {
+	    		this.isDead = false;
+	    		this.physBody.SetActive(true);
+	    		if(!IS_SERVER) {
+	    			var pPos = this.physbody.GetPosition(),
+	    				ent = gGameEngine.spawnEntity("SpawnEffect", pPos.x, pPos.y, null);
+	    			ent.onInit(this, pPos);
+	    		}
+	    	}
+	    }
 	},
 	//---------------------------------------------------
 	applyInputs: function() {
@@ -71,14 +90,44 @@ PlayerClass = EntityClass.extend({
 			this.physBody.SetLinearVelocity(new Vec2(vx,vy));
 		}
 	},
-	//---------------------------------------------------
+	
 	sendUpdates: function() {
 		this.sendPhysicsUpdates(true);
-		//if (this.pInput) this.toOthers.q_input(this.pInput);
+		if (this.pInput) this.toOthers.q_input(this.pInput);
+		if (IS_SERVER) {
+			this.toAll.q_stats({
+				health: this.health,
+				walkSpeed: this.walkspeed,
+			});
+		}
 	},
+	
+	on_input: function (msg) {
+		this.pInput = msg;
+	},
+	
+	on_stats: function (msg) {
+		if(IS_SERVER) return;
+		
+		this.health = msg.health;
+		this.walkSpeed = msg.walkSpeed;
+		
+	},
+	
+	takeDamage: function (amount) {
+		this.health -= amount;
+	},
+	
+	resetStats: function () {
+		this.health = 100;
+		this.isDead = false;
+		this.physBody.SetActive(true);
+	},
+	
 	on_setPosition: function(msg) {
 		this.centerAt(msg);
 	},
+	
 });
 
 Factory.nameClassMap["Player"] = PlayerClass;
