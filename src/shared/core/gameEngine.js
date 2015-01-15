@@ -123,10 +123,11 @@ GameEngineClass = Class.extend({
 		this.gMap = new TileMapLoaderClass();
 		this.gMap.load(mapOutside);
 		
-		//MEA spawn player
-		//TODO since it's single player right now, this works.  but on multiplayer ill need to switch spawning method
-		this.gPlayer0 = this.spawnEntity("Player", 1380.04, 1456.44, {name: "halfwit", team: "wat", userID: "player0", displayName: "potato"});
-		console.log('spawning player from gameEngine.js');
+	},
+	
+	notifyPlayers: function (msg) {
+		if(!IS_SERVER) return;
+		Server.broadcaster.q_statusMsg({msg:msg});
 	},
 	
     onCollisionTouch: function(bodyA,bodyB,impulse)
@@ -247,7 +248,19 @@ GameEngineClass = Class.extend({
 		}
 	},
 	
-	
+	removeEntity: function (ent) {
+		if (!ent) return;
+		
+		this.onUnspawned(ent);
+		
+		if (ent.name) {
+			delete this.namedEntities[ent.name];
+			delete this.gPlayers[ent.name];
+		}
+		
+		ent._killed = true;
+		this._deferredKill.push(ent);
+	},
 	
 	run: function () {
 		this.fps++;
@@ -291,8 +304,26 @@ GameEngineClass = Class.extend({
 		    this.gPlayers[p].applyInputs();
 		}
 		
-	},//end of update
-	//-----------------------------------------
+		//respawn entities
+		
+		for (var i = 0; i < this._deferredRespawn.length; i++) {
+			var pkt = this._deferredRespawn[i],
+				pl = this.namedEntities[pkt.from],
+				spawnPoint = "Team"+pl.team+"Spawn0";
+			if (!ent) {
+				console.log('Did not find spawn point for ' + pkt.from);
+				return;
+			}
+			pl.resetStats();
+			pl.centerAt(ent.pos);
+			pl.toAll.q_setPosition(ent.pos);
+			//TODO: Reset and broadcast weapons
+			console.log('Respawned entity ' + pl.name + 'at location' + p.pos.x + ',' + p.pos.y);
+		}
+		this._deferredRespawn.length = 0;
+		
+	},
+	
 	updatePhysics: function() {
 		gPhysicsEngine.update();
 		//TODO only doing one player, should be doing a bunch
@@ -304,6 +335,38 @@ GameEngineClass = Class.extend({
 	    }
 	},
 	
+	on_collision: function (msg) {
+		var ent0 = this.getEntityByName(msg.ent0),
+			ent1 = this.getEntityByName(msg.ent1),
+			body0 = null,
+			body1 = null;
+			
+		if(ent0 === null) ent0 = this.getEntityById(msg.ent0);
+		if(ent1 === null) ent1 = this.getEntityById(msg.ent1);
+		
+		if(ent0 != null) body0 = ent0.physBody;
+		if(ent1 != null) body1 = ent1.physBody;
+		
+		this.onCollisionTouch(body0, body1, msg.impulse);
+	},
+	
+	spawnPlayer: function (id, teamID, spname, typename, userID, displayName) {
+		console.log("Spawn" + id + " at " + spname);
+		var ent = this.getEntityByName(spname);
+		if (ent === null) {
+			console.log('Could not find ent ' + spname);
+			return -1;
+		}
+		this.gPlayers[id] = this.spawnEntity(typename, ent.pos.x, ent.pos.y, {name: '!'+id, team: teamID, userID: userID, displayName: displayName});
+		this.gPlayers[id].health = 0;
+		return this.gPlayers[id];
+	},
+	
+	unspawnPlayer: function (id) {
+		if (this.gPlayers[id])
+			this.notifyPlayers(this.gPlayers[id].displayName + " disconnected.");
+		this.removeEntity(this.gPlayers[id]);
+	}
 	
 });
 
