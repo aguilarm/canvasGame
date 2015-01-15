@@ -131,4 +131,3 @@ PlayerClass = EntityClass.extend({
 });
 
 Factory.nameClassMap["Player"] = PlayerClass;
-//gGameEngine.factory['player'] = PlayerClass;
