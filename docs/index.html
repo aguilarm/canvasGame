@@ -47,6 +47,23 @@ limitations under the License.
         <script type="text/javascript">
             IS_SERVER = false;
             
+            // checkWait polyfill
+            function checkWait(waitForTrue, onComplete) {
+                var complete = false;
+                var calls = 0;
+                var checkWaitInterval = setInterval(function () {
+                    complete = waitForTrue();
+                    calls++;
+                    if (calls > 50) {
+                        console.error('Reached maximum retries waiting for ' + waitForTrue.name + ' to finish.');
+                    }
+                    if (complete) {
+                        clearInterval(checkWaitInterval);
+                        onComplete();
+                    }
+                }, 200)
+            }
+
             function loadGame (gameURL, player_game_key, debug) {
                 document.getElementById("startGame").innerHTML = "Loading...";
                 
